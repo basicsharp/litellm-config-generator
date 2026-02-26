@@ -12,21 +12,21 @@
 - [ ] 1.10 Install Vitest test stack: `vitest`, `@vitest/coverage-v8`, `@testing-library/react`, `@testing-library/user-event`, `@testing-library/jest-dom`, `jsdom`
 - [ ] 1.11 Configure Vitest in `vitest.config.ts`: environment `jsdom`, coverage provider `v8`, coverage thresholds `lines: 90, branches: 90, functions: 90, statements: 90`, include `src/**/*.{ts,tsx}`
 - [ ] 1.12 Add `test` and `test:coverage` scripts to `package.json`; verify `npm run test:coverage` passes on an empty test file
-- [ ] 1.13 Install Python test stack: `pip install pytest pytest-cov`; add `pytest.ini` (or `pyproject.toml` `[tool.pytest.ini_options]`) with `--cov=scripts --cov-fail-under=90`
 
 ## 2. Catalog Generation Script
 
-- [ ] 2.1 Create `scripts/generate-catalog.py` that reads `litellm/model_prices_and_context_window.json`
-- [ ] 2.2 Implement provider grouping: group model entries by `litellm_provider`, filter to providers that have at least one `mode: "chat"` or `mode: "completion"` model
-- [ ] 2.3 Map each model to `{ id, mode, maxTokens, inputCostPerToken, outputCostPerToken }` — omit missing fields rather than null
-- [ ] 2.4 Write output to `public/catalog.json` with top-level `meta: { generatedAt, litellmSubmodulePath }` and `providers: { [providerId]: { models: [...] } }`
-- [ ] 2.5 Run the script and commit `public/catalog.json` to the repo
-- [ ] 2.6 Add `README.md` section documenting how to regenerate the catalog when the submodule is updated
+- [ ] 2.1 Create `scripts/generate-catalog.ts` with a `main()` function; add `generate:catalog` npm script to `package.json` (`npx tsx scripts/generate-catalog.ts`)
+- [ ] 2.2 Implement Source A (model list): read `litellm/model_prices_and_context_window.json`, group by `litellm_provider`, filter to providers with at least one `chat` or `completion` mode model; map each to `{ id, mode, maxTokens, inputCostPerToken, outputCostPerToken }`
+- [ ] 2.3 Implement Source A (base fields): regex-parse `litellm/litellm/types/router.py` to extract Pydantic field definitions from `CredentialLiteLLMParams`, `GenericLiteLLMParams`, `LiteLLM_Params`, `CustomPricingLiteLLMParams`; map Python types to string/number/boolean/unknown; mark `secret: true` for fields whose name contains key/secret/token/password/credential
+- [ ] 2.4 Implement Source B (extra fields): for each of the 10 target providers, regex-scan `litellm/litellm/llms/{provider}/**/*.py` for `optional_params.get` and `litellm_params.get` call patterns to discover provider-specific extra fields; exclude `tests/` paths; deduplicate against base field names
+- [ ] 2.5 Write output to `public/catalog.json` with shape: `{ meta: { generatedAt, litellmSubmodulePath }, providers: { [id]: { label, models, fields: { base, extra } } } }`
+- [ ] 2.6 Run `npm run generate:catalog` and commit `public/catalog.json` to the repo
+- [ ] 2.7 Add `README.md` section documenting how to regenerate the catalog when the submodule is updated
 
 ## 3. TypeScript Foundation
 
 - [ ] 3.1 Create `lib/types.ts` with types: `EnvVarValue`, `ModelEntry`, `LiteLLMParams`, `ModelInfo`, `ConfigState`
-- [ ] 3.2 Create `lib/credentials.ts` with the static provider credential map for all 10 providers (openai, azure, anthropic, bedrock, vertex_ai, gemini, groq, mistral, ollama, hosted_vllm) — each entry has `label`, `prefix`, `fields[]` with `name`, `required`, `secret`, `label`, `placeholder`, `default`
+- [ ] 3.2 Create `lib/catalog.ts` that imports `public/catalog.json` and exports typed accessor functions: `getProviders()`, `getModelsForProvider(providerId)`, `getFieldsForProvider(providerId)` — returns `{ base: CatalogField[], extra: CatalogField[] }`; no hand-coded `credentials.ts` needed
 - [ ] 3.3 Create `lib/catalog.ts` that imports `public/catalog.json` and exports typed accessor functions: `getProviders()`, `getModelsForProvider(providerId)`
 - [ ] 3.4 Create `lib/yaml-gen.ts`: `configToYaml(models: ModelEntry[]) → string` — uses js-yaml, omits empty fields, serializes EnvVarValue correctly
 - [ ] 3.5 Create `lib/yaml-parse.ts`: `yamlToConfig(yaml: string) → { models: ModelEntry[], errors: string[] }` — detects `os.environ/` pattern, maps to EnvVarValue, handles unknown providers
@@ -49,7 +49,7 @@
 ## 6. Model Form
 
 - [ ] 6.1 Create `components/model-form.tsx` — renders the full edit form for one `ModelEntry`: alias input, ProviderSelect, ModelSelect, dynamic credential fields, rate limit fields
-- [ ] 6.2 Implement dynamic credential fields: read from `credentials.ts` for the selected provider; render each field as `EnvVarInput`; mark required fields with asterisk
+- [ ] 6.2 Implement dynamic credential fields: call `getFieldsForProvider(providerId)` from `lib/catalog.ts`; render `fields.base` (excluding model/rpm/tpm/timeout/max_retries which have dedicated inputs) and `fields.extra` as `EnvVarInput`; mark required fields with asterisk; show `fields.extra` in a collapsible "Advanced" section
 - [ ] 6.3 Create `components/rate-limit-fields.tsx` — number inputs for `rpm`, `tpm`, `timeout`, `stream_timeout`, `max_retries`; render as optional, omit from state when empty
 - [ ] 6.4 When provider changes, clear provider-specific field values from state while preserving shared fields (model_name, rpm, tpm, timeout)
 
