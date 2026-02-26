@@ -1,10 +1,18 @@
-## 1. Project Bootstrap
+## 1. Project Bootstrap & Tooling
 
 - [ ] 1.1 Initialize Next.js 15 app at project root with TypeScript, Tailwind CSS, App Router, and `@/*` import alias (`npx create-next-app@latest .`)
 - [ ] 1.2 Initialize shadcn-ui with nova style (fall back to new-york if unavailable) and emerald base color (`npx shadcn@latest init`)
 - [ ] 1.3 Install shadcn components: button, card, dialog, input, label, select, badge, command, popover, tabs, tooltip, scroll-area, separator, toggle-group, textarea, alert
 - [ ] 1.4 Install runtime dependencies: `js-yaml` (YAML parse/serialize), `@types/js-yaml`
 - [ ] 1.5 Verify dev server starts clean (`npm run dev`) and shadcn components render correctly
+- [ ] 1.6 Install and configure ESLint: use `eslint-config-next` (included by `create-next-app`) + add `eslint-plugin-import` and `eslint-plugin-react-hooks`; set `"extends": ["next/core-web-vitals", "next/typescript"]` in `eslint.config.mjs`
+- [ ] 1.7 Install and configure Prettier: `prettier`, `eslint-config-prettier` (disables conflicting ESLint rules); add `.prettierrc` with project conventions (singleQuote, semi, tabWidth: 2, trailingComma: "es5", printWidth: 100)
+- [ ] 1.8 Add `.prettierignore` covering `node_modules/`, `.next/`, `out/`, `public/catalog.json`
+- [ ] 1.9 Install husky + lint-staged: `npx husky init`; configure `lint-staged` in `package.json` to run `eslint --fix` and `prettier --write` on staged `*.{ts,tsx,js,mjs}` files on pre-commit
+- [ ] 1.10 Install Vitest test stack: `vitest`, `@vitest/coverage-v8`, `@testing-library/react`, `@testing-library/user-event`, `@testing-library/jest-dom`, `jsdom`
+- [ ] 1.11 Configure Vitest in `vitest.config.ts`: environment `jsdom`, coverage provider `v8`, coverage thresholds `lines: 90, branches: 90, functions: 90, statements: 90`, include `src/**/*.{ts,tsx}`
+- [ ] 1.12 Add `test` and `test:coverage` scripts to `package.json`; verify `npm run test:coverage` passes on an empty test file
+- [ ] 1.13 Install Python test stack: `pip install pytest pytest-cov`; add `pytest.ini` (or `pyproject.toml` `[tool.pytest.ini_options]`) with `--cov=scripts --cov-fail-under=90`
 
 ## 2. Catalog Generation Script
 

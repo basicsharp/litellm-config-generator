@@ -3,11 +3,28 @@ schema: spec-driven
 # Project context (optional)
 # This is shown to AI when creating artifacts.
 # Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  LiteLLM Config Generator
+  Tech stack: Next.js, TypeScript, Tailwind CSS, Shadcn UI
+  Features:
+    - Generate LiteLLM config
+  Tools:
+    - Next.js
+    - TypeScript
+    - Tailwind CSS
+    - Shadcn UI
+  Practices:
+    - Always use conventional commits with type, scope (optional), and description always starting with lowercase without ending with period on git commit message
+    - Follow semantic versioning for releases
+    - TDD is mandatory, use TDD skills to write tests first before implementation
+    - Maintain 90%+ code coverage
+    - SOLID, YAGNI, KISS DRY, principles should be followed
+    - We use code reviews for all PRs/MRs
+    - Use context7 for latest documentations of components and modules
+  Style guides:
+    - Eslint
+    - Prettier
+    - Markdown for documentation
 
 # Per-artifact rules (optional)
 # Add custom rules for specific artifacts.
