@@ -59,14 +59,16 @@ The merged result is emitted into `public/catalog.json` under each provider's `f
 
 ---
 
-### D4: State management — React useState + useReducer
+### D4: State management — React Hook Form + useReducer (list) + Zod schemas
 
-**Decision**: Use component-local state with a top-level `useReducer` for the model list. No external state library.
+**Decision**: Two-layer state model:
+- **Model list layer** — `useReducer` at `app/page.tsx` manages the array of model entries (add, remove, reorder). Each `ModelEntry` in the array holds the *committed* (submitted) values.
+- **Per-model form layer** — React Hook Form v7 (`useForm` with `zodResolver`) manages in-flight edits for a single open model card. RHF handles dirty/touched tracking, field-level error display, and `os.environ/` discriminated union inputs natively via `Controller`. On form submit, the reducer receives the validated `ModelEntry` and updates the list.
+- **Validation** — Zod v4 schemas in `lib/schemas.ts` define `EnvVarValueSchema`, `LiteLLMParamsSchema`, and `ModelEntrySchema`. TypeScript types are inferred from schemas via `z.infer<>` — no separate type declarations needed.
 
-**Rationale**: The app is a single page with a single tree of state (an array of model entries). Zustand/Redux introduces indirection without benefit at this scale.
+**Rationale**: RHF eliminates manual touched/dirty/error state (which task 12.1 previously required us to hand-code). Zod v4 provides a single source of truth for both runtime validation and compile-time types. `useReducer` remains for the list because that state is not form state — it's structural (add/remove/reorder).
 
-**Alternative considered**: Zustand → consider if state grows to include litellm_settings / router_settings in a future iteration.
-
+**Alternative considered**: `useReducer` for everything → requires hand-rolling touched state, error display, and field-level validation that RHF provides for free. Zustand → unnecessary indirection at this scale.
 ---
 
 ### D5: YAML serialization — js-yaml
@@ -106,6 +108,14 @@ The merged result is emitted into `public/catalog.json` under each provider's `f
 Components to install: `button`, `card`, `dialog`, `input`, `label`, `select`, `badge`, `command` (for combobox), `popover`, `tabs`, `tooltip`, `scroll-area`, `separator`, `toggle-group`, `textarea`, `alert`.
 
 ---
+
+### D10: Schema validation — Zod v4
+
+**Decision**: Use Zod v4 (`zod`) for all runtime schema validation, bridged to React Hook Form via `@hookform/resolvers/zod`.
+
+**Rationale**: Zod v4 (released 2025) reduced core bundle size by 57% and parse speed by 7–14x vs v3. The `@hookform/resolvers/zod` adapter is first-class and used in all shadcn-ui form examples. Defining schemas in `lib/schemas.ts` and exporting `z.infer<typeof Schema>` types eliminates the need for a separate `lib/types.ts` — one definition, both runtime and compile-time safety.
+
+**Alternative considered**: Valibot v1 → smaller baseline bundle but thinner ecosystem integration with shadcn; functional API unfamiliar to most contributors. ArkType v2 → cutting-edge but less battle-tested resolver support.
 
 ## Risks / Trade-offs
 

@@ -2,8 +2,8 @@
 
 - [ ] 1.1 Initialize Next.js 15 app at project root with TypeScript, Tailwind CSS, App Router, and `@/*` import alias (`npx create-next-app@latest .`)
 - [ ] 1.2 Initialize shadcn-ui with nova style (fall back to new-york if unavailable) and emerald base color (`npx shadcn@latest init`)
-- [ ] 1.3 Install shadcn components: button, card, dialog, input, label, select, badge, command, popover, tabs, tooltip, scroll-area, separator, toggle-group, textarea, alert
-- [ ] 1.4 Install runtime dependencies: `js-yaml` (YAML parse/serialize), `@types/js-yaml`
+- [ ] 1.3 Install shadcn components: button, card, dialog, form, input, label, select, badge, command, popover, tabs, tooltip, scroll-area, separator, toggle-group, textarea, alert (`form` is shadcn's React Hook Form wrapper)
+- [ ] 1.4 Install runtime dependencies: `js-yaml` + `@types/js-yaml` (YAML); `react-hook-form` v7 (form state); `zod` v4 (schema validation); `@hookform/resolvers` (Zod ↔ RHF bridge)
 - [ ] 1.5 Verify dev server starts clean (`npm run dev`) and shadcn components render correctly
 - [ ] 1.6 Install and configure ESLint: use `eslint-config-next` (included by `create-next-app`) + add `eslint-plugin-import` and `eslint-plugin-react-hooks`; set `"extends": ["next/core-web-vitals", "next/typescript"]` in `eslint.config.mjs`
 - [ ] 1.7 Install and configure Prettier: `prettier`, `eslint-config-prettier` (disables conflicting ESLint rules); add `.prettierrc` with project conventions (singleQuote, semi, tabWidth: 2, trailingComma: "es5", printWidth: 100)
@@ -25,9 +25,9 @@
 
 ## 3. TypeScript Foundation
 
-- [ ] 3.1 Create `lib/types.ts` with types: `EnvVarValue`, `ModelEntry`, `LiteLLMParams`, `ModelInfo`, `ConfigState`
+- [ ] 3.1 Create `lib/schemas.ts` with Zod v4 schemas: `EnvVarValueSchema` (discriminated union `literal | env`), `LiteLLMParamsSchema` (record of EnvVarValue | number | boolean), `ModelEntrySchema` (model_name, provider, model, litellm_params, rpm/tpm/timeout/max_retries); export TypeScript types via `z.infer<>` — no separate types file needed
 - [ ] 3.2 Create `lib/catalog.ts` that imports `public/catalog.json` and exports typed accessor functions: `getProviders()`, `getModelsForProvider(providerId)`, `getFieldsForProvider(providerId)` — returns `{ base: CatalogField[], extra: CatalogField[] }`; no hand-coded `credentials.ts` needed
-- [ ] 3.3 Create `lib/catalog.ts` that imports `public/catalog.json` and exports typed accessor functions: `getProviders()`, `getModelsForProvider(providerId)`
+- [ ] 3.3 Create `lib/form-utils.ts`: `defaultModelEntry(providerId): ModelEntry` factory (blank entry with openai default), `modelEntryResolver` using `zodResolver(ModelEntrySchema)` from `@hookform/resolvers/zod`; export for use in ModelForm
 - [ ] 3.4 Create `lib/yaml-gen.ts`: `configToYaml(models: ModelEntry[]) → string` — uses js-yaml, omits empty fields, serializes EnvVarValue correctly
 - [ ] 3.5 Create `lib/yaml-parse.ts`: `yamlToConfig(yaml: string) → { models: ModelEntry[], errors: string[] }` — detects `os.environ/` pattern, maps to EnvVarValue, handles unknown providers
 - [ ] 3.6 Write unit tests (or manual verification) for yaml-gen and yaml-parse round-trip with at least: OpenAI literal key, Azure env-var key, unknown provider passthrough
@@ -48,10 +48,10 @@
 
 ## 6. Model Form
 
-- [ ] 6.1 Create `components/model-form.tsx` — renders the full edit form for one `ModelEntry`: alias input, ProviderSelect, ModelSelect, dynamic credential fields, rate limit fields
+- [ ] 6.1 Create `components/model-form.tsx` using shadcn `<Form>` + RHF `useForm({ resolver: modelEntryResolver, defaultValues })`: wrap all fields in `<FormField>` + `<FormItem>` + `<FormControl>` + `<FormMessage>` for automatic error display; include alias input, ProviderSelect, ModelSelect, dynamic credential fields, rate limit fields
 - [ ] 6.2 Implement dynamic credential fields: call `getFieldsForProvider(providerId)` from `lib/catalog.ts`; render `fields.base` (excluding model/rpm/tpm/timeout/max_retries which have dedicated inputs) and `fields.extra` as `EnvVarInput`; mark required fields with asterisk; show `fields.extra` in a collapsible "Advanced" section
 - [ ] 6.3 Create `components/rate-limit-fields.tsx` — number inputs for `rpm`, `tpm`, `timeout`, `stream_timeout`, `max_retries`; render as optional, omit from state when empty
-- [ ] 6.4 When provider changes, clear provider-specific field values from state while preserving shared fields (model_name, rpm, tpm, timeout)
+- [ ] 6.4 When provider changes, call `form.reset({ ...form.getValues(), provider: newProvider, litellm_params: {} })` to clear provider-specific fields while preserving shared fields (model_name, rpm, tpm, timeout)
 
 ## 7. Model Card
 
@@ -91,7 +91,7 @@
 
 ## 12. Polish & Validation
 
-- [ ] 12.1 Add field-level validation hints: highlight required empty fields with a red border + helper text when the user has interacted with the field (touched state)
+- [ ] 12.1 Verify field-level validation UX: required empty fields show red border + FormMessage error text on submit attempt; RHF's touched/dirty tracking drives this automatically — no custom touched state needed
 - [ ] 12.2 Verify YAML output round-trip: import the `litellm/cookbook/misc/config.yaml` example, verify all models parse correctly, export, and confirm the output is valid YAML
 - [ ] 12.3 Test the `os.environ/` pattern: import the `litellm/proxy_server_config.yaml` example, verify env var fields are detected and shown in Env Var mode
 - [ ] 12.4 Verify empty state: fresh page load shows empty model list, YAML preview shows `model_list: []`
