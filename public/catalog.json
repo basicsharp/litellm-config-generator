@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-02-27T08:39:28.375Z",
+    "generatedAt": "2026-02-27T15:16:21.818Z",
     "litellmSubmodulePath": "litellm"
   },
   "providers": {
@@ -4362,6 +4362,790 @@
       "label": "Vertex AI",
       "models": [
         {
+          "id": "chat-bison",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "chat-bison-32k",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "chat-bison-32k@002",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "chat-bison@001",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "chat-bison@002",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "code-bison",
+          "mode": "chat",
+          "maxTokens": 1024,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "code-bison-32k@002",
+          "mode": "completion",
+          "maxTokens": 1024,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "code-bison@001",
+          "mode": "completion",
+          "maxTokens": 1024,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "code-bison@002",
+          "mode": "completion",
+          "maxTokens": 1024,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "code-bison32k",
+          "mode": "completion",
+          "maxTokens": 1024,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "code-gecko",
+          "mode": "completion",
+          "maxTokens": 64,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "code-gecko-latest",
+          "mode": "completion",
+          "maxTokens": 64,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "code-gecko@001",
+          "mode": "completion",
+          "maxTokens": 64,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "code-gecko@002",
+          "mode": "completion",
+          "maxTokens": 64,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "codechat-bison",
+          "mode": "chat",
+          "maxTokens": 1024,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "codechat-bison-32k",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "codechat-bison-32k@002",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "codechat-bison@001",
+          "mode": "chat",
+          "maxTokens": 1024,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "codechat-bison@002",
+          "mode": "chat",
+          "maxTokens": 1024,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "codechat-bison@latest",
+          "mode": "chat",
+          "maxTokens": 1024,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "gemini-1.0-pro",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 5e-7,
+          "outputCostPerToken": 0.0000015
+        },
+        {
+          "id": "gemini-1.0-pro-001",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 5e-7,
+          "outputCostPerToken": 0.0000015
+        },
+        {
+          "id": "gemini-1.0-pro-002",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 5e-7,
+          "outputCostPerToken": 0.0000015
+        },
+        {
+          "id": "gemini-1.0-pro-vision",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 5e-7,
+          "outputCostPerToken": 0.0000015
+        },
+        {
+          "id": "gemini-1.0-pro-vision-001",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 5e-7,
+          "outputCostPerToken": 0.0000015
+        },
+        {
+          "id": "gemini-1.0-ultra",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 5e-7,
+          "outputCostPerToken": 0.0000015
+        },
+        {
+          "id": "gemini-1.0-ultra-001",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 5e-7,
+          "outputCostPerToken": 0.0000015
+        },
+        {
+          "id": "gemini-1.5-flash",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 7.5e-8,
+          "outputCostPerToken": 3e-7
+        },
+        {
+          "id": "gemini-1.5-flash-001",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 7.5e-8,
+          "outputCostPerToken": 3e-7
+        },
+        {
+          "id": "gemini-1.5-flash-002",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 7.5e-8,
+          "outputCostPerToken": 3e-7
+        },
+        {
+          "id": "gemini-1.5-flash-exp-0827",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 4.688e-9,
+          "outputCostPerToken": 4.6875e-9
+        },
+        {
+          "id": "gemini-1.5-flash-preview-0514",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 7.5e-8,
+          "outputCostPerToken": 4.6875e-9
+        },
+        {
+          "id": "gemini-1.5-pro",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.00000125,
+          "outputCostPerToken": 0.000005
+        },
+        {
+          "id": "gemini-1.5-pro-001",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.00000125,
+          "outputCostPerToken": 0.000005
+        },
+        {
+          "id": "gemini-1.5-pro-002",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.00000125,
+          "outputCostPerToken": 0.000005
+        },
+        {
+          "id": "gemini-1.5-pro-preview-0215",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 7.8125e-8,
+          "outputCostPerToken": 3.125e-7
+        },
+        {
+          "id": "gemini-1.5-pro-preview-0409",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 7.8125e-8,
+          "outputCostPerToken": 3.125e-7
+        },
+        {
+          "id": "gemini-1.5-pro-preview-0514",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 7.8125e-8,
+          "outputCostPerToken": 3.125e-7
+        },
+        {
+          "id": "gemini-2.0-flash",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 1e-7,
+          "outputCostPerToken": 4e-7
+        },
+        {
+          "id": "gemini-2.0-flash-001",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 1.5e-7,
+          "outputCostPerToken": 6e-7
+        },
+        {
+          "id": "gemini-2.0-flash-exp",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 1.5e-7,
+          "outputCostPerToken": 6e-7
+        },
+        {
+          "id": "gemini-2.0-flash-lite",
+          "mode": "chat",
+          "maxTokens": 1048576,
+          "inputCostPerToken": 7.5e-8,
+          "outputCostPerToken": 3e-7
+        },
+        {
+          "id": "gemini-2.0-flash-lite-001",
+          "mode": "chat",
+          "maxTokens": 1048576,
+          "inputCostPerToken": 7.5e-8,
+          "outputCostPerToken": 3e-7
+        },
+        {
+          "id": "gemini-2.0-flash-live-preview-04-09",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 5e-7,
+          "outputCostPerToken": 0.000002
+        },
+        {
+          "id": "gemini-2.0-flash-preview-image-generation",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 1e-7,
+          "outputCostPerToken": 4e-7
+        },
+        {
+          "id": "gemini-2.0-flash-thinking-exp",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0,
+          "outputCostPerToken": 0
+        },
+        {
+          "id": "gemini-2.0-flash-thinking-exp-01-21",
+          "mode": "chat",
+          "maxTokens": 65536,
+          "inputCostPerToken": 0,
+          "outputCostPerToken": 0
+        },
+        {
+          "id": "gemini-2.0-pro-exp-02-05",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.00000125,
+          "outputCostPerToken": 0.00001
+        },
+        {
+          "id": "gemini-2.5-computer-use-preview-10-2025",
+          "mode": "chat",
+          "maxTokens": 64000,
+          "inputCostPerToken": 0.00000125,
+          "outputCostPerToken": 0.00001
+        },
+        {
+          "id": "gemini-2.5-flash",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 3e-7,
+          "outputCostPerToken": 0.0000025
+        },
+        {
+          "id": "gemini-2.5-flash-lite",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 1e-7,
+          "outputCostPerToken": 4e-7
+        },
+        {
+          "id": "gemini-2.5-flash-lite-preview-06-17",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 1e-7,
+          "outputCostPerToken": 4e-7
+        },
+        {
+          "id": "gemini-2.5-flash-lite-preview-09-2025",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 1e-7,
+          "outputCostPerToken": 4e-7
+        },
+        {
+          "id": "gemini-2.5-flash-preview-04-17",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 1.5e-7,
+          "outputCostPerToken": 6e-7
+        },
+        {
+          "id": "gemini-2.5-flash-preview-05-20",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 3e-7,
+          "outputCostPerToken": 0.0000025
+        },
+        {
+          "id": "gemini-2.5-flash-preview-09-2025",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 3e-7,
+          "outputCostPerToken": 0.0000025
+        },
+        {
+          "id": "gemini-2.5-pro",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 0.00000125,
+          "outputCostPerToken": 0.00001
+        },
+        {
+          "id": "gemini-2.5-pro-exp-03-25",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 0.00000125,
+          "outputCostPerToken": 0.00001
+        },
+        {
+          "id": "gemini-2.5-pro-preview-03-25",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 0.00000125,
+          "outputCostPerToken": 0.00001
+        },
+        {
+          "id": "gemini-2.5-pro-preview-05-06",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 0.00000125,
+          "outputCostPerToken": 0.00001
+        },
+        {
+          "id": "gemini-2.5-pro-preview-06-05",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 0.00000125,
+          "outputCostPerToken": 0.00001
+        },
+        {
+          "id": "gemini-2.5-pro-preview-tts",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 0.00000125,
+          "outputCostPerToken": 0.00001
+        },
+        {
+          "id": "gemini-3-flash-preview",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 5e-7,
+          "outputCostPerToken": 0.000003
+        },
+        {
+          "id": "gemini-3-pro-preview",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 0.000002,
+          "outputCostPerToken": 0.000012
+        },
+        {
+          "id": "gemini-flash-experimental",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0,
+          "outputCostPerToken": 0
+        },
+        {
+          "id": "gemini-live-2.5-flash-preview-native-audio-09-2025",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 3e-7,
+          "outputCostPerToken": 0.000002
+        },
+        {
+          "id": "gemini-pro",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 5e-7,
+          "outputCostPerToken": 0.0000015
+        },
+        {
+          "id": "gemini-pro-experimental",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0,
+          "outputCostPerToken": 0
+        },
+        {
+          "id": "gemini-pro-vision",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 5e-7,
+          "outputCostPerToken": 0.0000015
+        },
+        {
+          "id": "gemini-robotics-er-1.5-preview",
+          "mode": "chat",
+          "maxTokens": 65535,
+          "inputCostPerToken": 3e-7,
+          "outputCostPerToken": 0.0000025
+        },
+        {
+          "id": "medlm-large",
+          "mode": "chat",
+          "maxTokens": 1024,
+          "inputCostPerToken": null,
+          "outputCostPerToken": null
+        },
+        {
+          "id": "medlm-medium",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": null,
+          "outputCostPerToken": null
+        },
+        {
+          "id": "text-bison",
+          "mode": "completion",
+          "maxTokens": 2048,
+          "inputCostPerToken": null,
+          "outputCostPerToken": null
+        },
+        {
+          "id": "text-bison@001",
+          "mode": "completion",
+          "maxTokens": 1024,
+          "inputCostPerToken": null,
+          "outputCostPerToken": null
+        },
+        {
+          "id": "text-bison@002",
+          "mode": "completion",
+          "maxTokens": 1024,
+          "inputCostPerToken": null,
+          "outputCostPerToken": null
+        },
+        {
+          "id": "text-bison32k",
+          "mode": "completion",
+          "maxTokens": 1024,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "text-bison32k@002",
+          "mode": "completion",
+          "maxTokens": 1024,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 1.25e-7
+        },
+        {
+          "id": "text-unicorn",
+          "mode": "completion",
+          "maxTokens": 1024,
+          "inputCostPerToken": 0.00001,
+          "outputCostPerToken": 0.000028
+        },
+        {
+          "id": "text-unicorn@001",
+          "mode": "completion",
+          "maxTokens": 1024,
+          "inputCostPerToken": 0.00001,
+          "outputCostPerToken": 0.000028
+        },
+        {
+          "id": "vertex_ai/claude-3-5-haiku",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.000001,
+          "outputCostPerToken": 0.000005
+        },
+        {
+          "id": "vertex_ai/claude-3-5-haiku@20241022",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.000001,
+          "outputCostPerToken": 0.000005
+        },
+        {
+          "id": "vertex_ai/claude-3-5-sonnet",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "vertex_ai/claude-3-5-sonnet-v2",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "vertex_ai/claude-3-5-sonnet-v2@20241022",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "vertex_ai/claude-3-5-sonnet@20240620",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "vertex_ai/claude-3-7-sonnet@20250219",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "vertex_ai/claude-3-haiku",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 2.5e-7,
+          "outputCostPerToken": 0.00000125
+        },
+        {
+          "id": "vertex_ai/claude-3-haiku@20240307",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 2.5e-7,
+          "outputCostPerToken": 0.00000125
+        },
+        {
+          "id": "vertex_ai/claude-3-opus",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 0.000015,
+          "outputCostPerToken": 0.000075
+        },
+        {
+          "id": "vertex_ai/claude-3-opus@20240229",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 0.000015,
+          "outputCostPerToken": 0.000075
+        },
+        {
+          "id": "vertex_ai/claude-3-sonnet",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "vertex_ai/claude-3-sonnet@20240229",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "vertex_ai/claude-haiku-4-5@20251001",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.000001,
+          "outputCostPerToken": 0.000005
+        },
+        {
+          "id": "vertex_ai/claude-opus-4",
+          "mode": "chat",
+          "maxTokens": 32000,
+          "inputCostPerToken": 0.000015,
+          "outputCostPerToken": 0.000075
+        },
+        {
+          "id": "vertex_ai/claude-opus-4-1",
+          "mode": "chat",
+          "maxTokens": 32000,
+          "inputCostPerToken": 0.000015,
+          "outputCostPerToken": 0.000075
+        },
+        {
+          "id": "vertex_ai/claude-opus-4-1@20250805",
+          "mode": "chat",
+          "maxTokens": 32000,
+          "inputCostPerToken": 0.000015,
+          "outputCostPerToken": 0.000075
+        },
+        {
+          "id": "vertex_ai/claude-opus-4-5",
+          "mode": "chat",
+          "maxTokens": 64000,
+          "inputCostPerToken": 0.000005,
+          "outputCostPerToken": 0.000025
+        },
+        {
+          "id": "vertex_ai/claude-opus-4-5@20251101",
+          "mode": "chat",
+          "maxTokens": 64000,
+          "inputCostPerToken": 0.000005,
+          "outputCostPerToken": 0.000025
+        },
+        {
+          "id": "vertex_ai/claude-opus-4-6",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 0.000005,
+          "outputCostPerToken": 0.000025
+        },
+        {
+          "id": "vertex_ai/claude-opus-4@20250514",
+          "mode": "chat",
+          "maxTokens": 32000,
+          "inputCostPerToken": 0.000015,
+          "outputCostPerToken": 0.000075
+        },
+        {
+          "id": "vertex_ai/claude-sonnet-4",
+          "mode": "chat",
+          "maxTokens": 64000,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "vertex_ai/claude-sonnet-4-5",
+          "mode": "chat",
+          "maxTokens": 64000,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "vertex_ai/claude-sonnet-4-5@20250929",
+          "mode": "chat",
+          "maxTokens": 64000,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "vertex_ai/claude-sonnet-4@20250514",
+          "mode": "chat",
+          "maxTokens": 64000,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "vertex_ai/codestral-2",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 3e-7,
+          "outputCostPerToken": 9e-7
+        },
+        {
+          "id": "vertex_ai/codestral-2@001",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 3e-7,
+          "outputCostPerToken": 9e-7
+        },
+        {
+          "id": "vertex_ai/codestral-2501",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 2e-7,
+          "outputCostPerToken": 6e-7
+        },
+        {
+          "id": "vertex_ai/codestral@2405",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 2e-7,
+          "outputCostPerToken": 6e-7
+        },
+        {
+          "id": "vertex_ai/codestral@latest",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 2e-7,
+          "outputCostPerToken": 6e-7
+        },
+        {
+          "id": "vertex_ai/deepseek-ai/deepseek-r1-0528-maas",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.00000135,
+          "outputCostPerToken": 0.0000054
+        },
+        {
+          "id": "vertex_ai/deepseek-ai/deepseek-v3.1-maas",
+          "mode": "chat",
+          "maxTokens": 32768,
+          "inputCostPerToken": 0.00000135,
+          "outputCostPerToken": 0.0000054
+        },
+        {
+          "id": "vertex_ai/deepseek-ai/deepseek-v3.2-maas",
+          "mode": "chat",
+          "maxTokens": 32768,
+          "inputCostPerToken": 5.6e-7,
+          "outputCostPerToken": 0.00000168
+        },
+        {
           "id": "vertex_ai/gemini-3-flash-preview",
           "mode": "chat",
           "maxTokens": 65535,
@@ -4374,6 +5158,286 @@
           "maxTokens": 65535,
           "inputCostPerToken": 0.000002,
           "outputCostPerToken": 0.000012
+        },
+        {
+          "id": "vertex_ai/jamba-1.5",
+          "mode": "chat",
+          "maxTokens": 256000,
+          "inputCostPerToken": 2e-7,
+          "outputCostPerToken": 4e-7
+        },
+        {
+          "id": "vertex_ai/jamba-1.5-large",
+          "mode": "chat",
+          "maxTokens": 256000,
+          "inputCostPerToken": 0.000002,
+          "outputCostPerToken": 0.000008
+        },
+        {
+          "id": "vertex_ai/jamba-1.5-large@001",
+          "mode": "chat",
+          "maxTokens": 256000,
+          "inputCostPerToken": 0.000002,
+          "outputCostPerToken": 0.000008
+        },
+        {
+          "id": "vertex_ai/jamba-1.5-mini",
+          "mode": "chat",
+          "maxTokens": 256000,
+          "inputCostPerToken": 2e-7,
+          "outputCostPerToken": 4e-7
+        },
+        {
+          "id": "vertex_ai/jamba-1.5-mini@001",
+          "mode": "chat",
+          "maxTokens": 256000,
+          "inputCostPerToken": 2e-7,
+          "outputCostPerToken": 4e-7
+        },
+        {
+          "id": "vertex_ai/meta/llama-3.1-405b-instruct-maas",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 0.000005,
+          "outputCostPerToken": 0.000016
+        },
+        {
+          "id": "vertex_ai/meta/llama-3.1-70b-instruct-maas",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 0,
+          "outputCostPerToken": 0
+        },
+        {
+          "id": "vertex_ai/meta/llama-3.1-8b-instruct-maas",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 0,
+          "outputCostPerToken": 0
+        },
+        {
+          "id": "vertex_ai/meta/llama-3.2-90b-vision-instruct-maas",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 0,
+          "outputCostPerToken": 0
+        },
+        {
+          "id": "vertex_ai/meta/llama-4-maverick-17b-128e-instruct-maas",
+          "mode": "chat",
+          "maxTokens": 1000000,
+          "inputCostPerToken": 3.5e-7,
+          "outputCostPerToken": 0.00000115
+        },
+        {
+          "id": "vertex_ai/meta/llama-4-maverick-17b-16e-instruct-maas",
+          "mode": "chat",
+          "maxTokens": 1000000,
+          "inputCostPerToken": 3.5e-7,
+          "outputCostPerToken": 0.00000115
+        },
+        {
+          "id": "vertex_ai/meta/llama-4-scout-17b-128e-instruct-maas",
+          "mode": "chat",
+          "maxTokens": 10000000,
+          "inputCostPerToken": 2.5e-7,
+          "outputCostPerToken": 7e-7
+        },
+        {
+          "id": "vertex_ai/meta/llama-4-scout-17b-16e-instruct-maas",
+          "mode": "chat",
+          "maxTokens": 10000000,
+          "inputCostPerToken": 2.5e-7,
+          "outputCostPerToken": 7e-7
+        },
+        {
+          "id": "vertex_ai/meta/llama3-405b-instruct-maas",
+          "mode": "chat",
+          "maxTokens": 32000,
+          "inputCostPerToken": 0,
+          "outputCostPerToken": 0
+        },
+        {
+          "id": "vertex_ai/meta/llama3-70b-instruct-maas",
+          "mode": "chat",
+          "maxTokens": 32000,
+          "inputCostPerToken": 0,
+          "outputCostPerToken": 0
+        },
+        {
+          "id": "vertex_ai/meta/llama3-8b-instruct-maas",
+          "mode": "chat",
+          "maxTokens": 32000,
+          "inputCostPerToken": 0,
+          "outputCostPerToken": 0
+        },
+        {
+          "id": "vertex_ai/minimaxai/minimax-m2-maas",
+          "mode": "chat",
+          "maxTokens": 196608,
+          "inputCostPerToken": 3e-7,
+          "outputCostPerToken": 0.0000012
+        },
+        {
+          "id": "vertex_ai/mistral-large-2411",
+          "mode": "chat",
+          "maxTokens": 8191,
+          "inputCostPerToken": 0.000002,
+          "outputCostPerToken": 0.000006
+        },
+        {
+          "id": "vertex_ai/mistral-large@2407",
+          "mode": "chat",
+          "maxTokens": 8191,
+          "inputCostPerToken": 0.000002,
+          "outputCostPerToken": 0.000006
+        },
+        {
+          "id": "vertex_ai/mistral-large@2411-001",
+          "mode": "chat",
+          "maxTokens": 8191,
+          "inputCostPerToken": 0.000002,
+          "outputCostPerToken": 0.000006
+        },
+        {
+          "id": "vertex_ai/mistral-large@latest",
+          "mode": "chat",
+          "maxTokens": 8191,
+          "inputCostPerToken": 0.000002,
+          "outputCostPerToken": 0.000006
+        },
+        {
+          "id": "vertex_ai/mistral-medium-3",
+          "mode": "chat",
+          "maxTokens": 8191,
+          "inputCostPerToken": 4e-7,
+          "outputCostPerToken": 0.000002
+        },
+        {
+          "id": "vertex_ai/mistral-medium-3@001",
+          "mode": "chat",
+          "maxTokens": 8191,
+          "inputCostPerToken": 4e-7,
+          "outputCostPerToken": 0.000002
+        },
+        {
+          "id": "vertex_ai/mistral-nemo@2407",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000003
+        },
+        {
+          "id": "vertex_ai/mistral-nemo@latest",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 1.5e-7,
+          "outputCostPerToken": 1.5e-7
+        },
+        {
+          "id": "vertex_ai/mistral-small-2503",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 0.000001,
+          "outputCostPerToken": 0.000003
+        },
+        {
+          "id": "vertex_ai/mistral-small-2503@001",
+          "mode": "chat",
+          "maxTokens": 8191,
+          "inputCostPerToken": 0.000001,
+          "outputCostPerToken": 0.000003
+        },
+        {
+          "id": "vertex_ai/mistralai/codestral-2",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 3e-7,
+          "outputCostPerToken": 9e-7
+        },
+        {
+          "id": "vertex_ai/mistralai/codestral-2@001",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 3e-7,
+          "outputCostPerToken": 9e-7
+        },
+        {
+          "id": "vertex_ai/mistralai/mistral-medium-3",
+          "mode": "chat",
+          "maxTokens": 8191,
+          "inputCostPerToken": 4e-7,
+          "outputCostPerToken": 0.000002
+        },
+        {
+          "id": "vertex_ai/mistralai/mistral-medium-3@001",
+          "mode": "chat",
+          "maxTokens": 8191,
+          "inputCostPerToken": 4e-7,
+          "outputCostPerToken": 0.000002
+        },
+        {
+          "id": "vertex_ai/moonshotai/kimi-k2-thinking-maas",
+          "mode": "chat",
+          "maxTokens": 256000,
+          "inputCostPerToken": 6e-7,
+          "outputCostPerToken": 0.0000025
+        },
+        {
+          "id": "vertex_ai/openai/gpt-oss-120b-maas",
+          "mode": "chat",
+          "maxTokens": 32768,
+          "inputCostPerToken": 1.5e-7,
+          "outputCostPerToken": 6e-7
+        },
+        {
+          "id": "vertex_ai/openai/gpt-oss-20b-maas",
+          "mode": "chat",
+          "maxTokens": 32768,
+          "inputCostPerToken": 7.5e-8,
+          "outputCostPerToken": 3e-7
+        },
+        {
+          "id": "vertex_ai/qwen/qwen3-235b-a22b-instruct-2507-maas",
+          "mode": "chat",
+          "maxTokens": 16384,
+          "inputCostPerToken": 2.5e-7,
+          "outputCostPerToken": 0.000001
+        },
+        {
+          "id": "vertex_ai/qwen/qwen3-coder-480b-a35b-instruct-maas",
+          "mode": "chat",
+          "maxTokens": 32768,
+          "inputCostPerToken": 0.000001,
+          "outputCostPerToken": 0.000004
+        },
+        {
+          "id": "vertex_ai/qwen/qwen3-next-80b-a3b-instruct-maas",
+          "mode": "chat",
+          "maxTokens": 262144,
+          "inputCostPerToken": 1.5e-7,
+          "outputCostPerToken": 0.0000012
+        },
+        {
+          "id": "vertex_ai/qwen/qwen3-next-80b-a3b-thinking-maas",
+          "mode": "chat",
+          "maxTokens": 262144,
+          "inputCostPerToken": 1.5e-7,
+          "outputCostPerToken": 0.0000012
+        },
+        {
+          "id": "vertex_ai/zai-org/glm-4.7-maas",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 6e-7,
+          "outputCostPerToken": 0.0000022
+        },
+        {
+          "id": "vertex_ai/zai-org/glm-5-maas",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 0.000001,
+          "outputCostPerToken": 0.0000032
         }
       ],
       "fields": {

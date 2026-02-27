@@ -1,5 +1,7 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { normalizeProviderId } from '../src/lib/normalize-provider';
 
 type CatalogFieldType = 'string' | 'number' | 'boolean' | 'unknown';
 
@@ -226,7 +228,7 @@ function extractModelsByProvider(
   const grouped: Record<string, CatalogModel[]> = {};
 
   for (const [modelId, entry] of Object.entries(modelData)) {
-    const provider = entry.litellm_provider;
+    const provider = normalizeProviderId(entry.litellm_provider);
     if (!provider || !TARGET_PROVIDERS.includes(provider as (typeof TARGET_PROVIDERS)[number])) {
       continue;
     }
@@ -322,8 +324,14 @@ async function main(): Promise<void> {
   console.log(`Catalog generated at public/catalog.json with ${providerCount} providers.`);
 }
 
-main().catch((error: unknown) => {
-  const message = error instanceof Error ? error.message : String(error);
-  console.error(`Failed to generate catalog: ${message}`);
-  process.exit(1);
-});
+const isDirectRun =
+  typeof process.argv[1] === 'string' &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isDirectRun) {
+  main().catch((error: unknown) => {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`Failed to generate catalog: ${message}`);
+    process.exit(1);
+  });
+}
