@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 

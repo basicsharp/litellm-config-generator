@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useMemo, useReducer, useState } from 'react';
 
 import { ImportDialog } from '@/components/import-dialog';

@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { Plus } from 'lucide-react';
 
 import { ModelCard } from '@/components/model-card';

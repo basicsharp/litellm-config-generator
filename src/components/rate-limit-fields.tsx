@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
 import { FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect } from 'react';
+import React, { startTransition, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { EnvVarInput } from '@/components/env-var-input';
@@ -59,7 +59,9 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
 
   const handleProviderChange = useCallback(
     (newProvider: string) => {
-      form.reset({ ...form.getValues(), provider: newProvider, litellm_params: {} });
+      startTransition(() => {
+        form.reset({ ...form.getValues(), provider: newProvider, litellm_params: {} });
+      });
     },
     [form]
   );
