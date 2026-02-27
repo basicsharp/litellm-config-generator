@@ -1,69 +1,41 @@
-# ── Next.js ──────────────────────────────────────────────────────────────────
-.next/
-out/
-build/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# ── Node ─────────────────────────────────────────────────────────────────────
-node_modules/
-.npm
-.pnp
-.pnp.js
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# ── Environment variables ─────────────────────────────────────────────────────
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# testing
+/coverage
 
-# ── Python ────────────────────────────────────────────────────────────────────
-__pycache__/
-*.py[cod]
-*$py.class
-*.pyo
-.venv/
-venv/
-env/
-.Python
-*.egg-info/
-dist/
-*.egg
+# next.js
+/.next/
+/out/
 
-# ── TypeScript ────────────────────────────────────────────────────────────────
-*.tsbuildinfo
-next-env.d.ts
+# production
+/build
 
-# ── OS ────────────────────────────────────────────────────────────────────────
+# misc
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-Thumbs.db
-Desktop.ini
+*.pem
 
-# ── Editors ───────────────────────────────────────────────────────────────────
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# ── Logs ─────────────────────────────────────────────────────────────────────
-*.log
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
+.pnpm-debug.log*
 
-# ── Testing ───────────────────────────────────────────────────────────────────
-coverage/
-.nyc_output/
+# env files (can opt-in for committing if needed)
+.env*
 
-# ── Misc ──────────────────────────────────────────────────────────────────────
-.cache/
-.parcel-cache/
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
