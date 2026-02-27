@@ -7,6 +7,7 @@ import { codeToHtml } from 'shiki';
 import { Button } from '@/components/ui/button';
 import { configToYaml } from '@/lib/yaml-gen';
 import type { ModelEntry } from '@/lib/schemas';
+import { Card } from './ui/card';
 
 type YamlPreviewProps = {
   models: ModelEntry[];
@@ -31,7 +32,7 @@ export function YamlPreview({ models }: YamlPreviewProps) {
   }, [yamlText]);
 
   return (
-    <div className="sticky top-0 flex flex-col gap-3 overflow-y-auto rounded-lg border bg-card p-4">
+    <Card className="sticky top-0 flex flex-col gap-3 overflow-y-auto rounded-lg border bg-card p-4">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold">YAML Preview</h2>
         <Button
@@ -47,7 +48,10 @@ export function YamlPreview({ models }: YamlPreviewProps) {
           {copied ? 'Copied!' : 'Copy'}
         </Button>
       </div>
-      <div className="overflow-x-auto text-sm" dangerouslySetInnerHTML={{ __html: highlighted }} />
-    </div>
+      <div
+        className="overflow-x-auto text-sm [&_pre]:m-0 [&_pre]:rounded-md [&_pre]:p-4"
+        dangerouslySetInnerHTML={{ __html: highlighted }}
+      />
+    </Card>
   );
 }

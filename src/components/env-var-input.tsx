@@ -41,8 +41,9 @@ export function EnvVarInput({
   }, [value]);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1">
       <ToggleGroup
+        className="justify-start"
         type="single"
         value={mode}
         onValueChange={(newValue) => {
@@ -55,21 +56,22 @@ export function EnvVarInput({
         }}
         aria-label="Select input mode"
       >
-        <ToggleGroupItem value="literal" aria-label="Literal mode">
+        <ToggleGroupItem value="literal" aria-label="Literal mode" size="sm">
           Literal
         </ToggleGroupItem>
-        <ToggleGroupItem value="env" aria-label="Env var mode">
+        <ToggleGroupItem value="env" aria-label="Env var mode" size="sm">
           Env Var
         </ToggleGroupItem>
       </ToggleGroup>
 
       {mode === 'literal' ? (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center space-x-2">
           <Input
             aria-label={literalAriaLabel}
             type={secret && !showSecret ? 'password' : 'text'}
             value={literalValue}
             onChange={(event) => onChange({ mode: 'literal', value: event.target.value })}
+            data-lpignore="true"
           />
           {secret ? (
             <Button
@@ -84,12 +86,11 @@ export function EnvVarInput({
           ) : null}
         </div>
       ) : (
-        <div className="flex items-center rounded-md border bg-background px-3">
-          <span className="pr-2 text-sm text-muted-foreground">os.environ/</span>
+        <div className="flex items-center">
           <Input
-            className="border-0 px-0 focus-visible:ring-0"
             aria-label={envAriaLabel}
             value={envVarName}
+            placeholder="os.environ/"
             onChange={(event) => onChange({ mode: 'env', varName: event.target.value })}
           />
         </div>

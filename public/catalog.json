@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-02-26T18:21:15.435Z",
+    "generatedAt": "2026-02-27T08:39:28.375Z",
     "litellmSubmodulePath": "litellm"
   },
   "providers": {
@@ -725,24 +725,6 @@
       "fields": {
         "base": [
           {
-            "name": "api_base",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "api_key",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "api_version",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "auto_router_config",
             "type": "string",
             "required": false,
@@ -765,30 +747,6 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "aws_access_key_id",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "aws_bedrock_runtime_endpoint",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_secret_access_key",
-            "type": "string",
-            "required": false,
-            "secret": true
           },
           {
             "name": "budget_duration",
@@ -875,12 +833,6 @@
             "secret": false
           },
           {
-            "name": "region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "rpm",
             "type": "number",
             "required": false,
@@ -933,33 +885,15 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "vertex_credentials",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "vertex_location",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "vertex_project",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "watsonx_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
           }
         ],
         "extra": [
+          {
+            "name": "api_key",
+            "type": "unknown",
+            "required": false,
+            "secret": true
+          },
           {
             "name": "async_call",
             "type": "unknown",
@@ -1884,24 +1818,6 @@
       "fields": {
         "base": [
           {
-            "name": "api_base",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "api_key",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "api_version",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "auto_router_config",
             "type": "string",
             "required": false,
@@ -1924,30 +1840,6 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "aws_access_key_id",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "aws_bedrock_runtime_endpoint",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_secret_access_key",
-            "type": "string",
-            "required": false,
-            "secret": true
           },
           {
             "name": "budget_duration",
@@ -2034,12 +1926,6 @@
             "secret": false
           },
           {
-            "name": "region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "rpm",
             "type": "number",
             "required": false,
@@ -2092,33 +1978,15 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "vertex_credentials",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "vertex_location",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "vertex_project",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "watsonx_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
           }
         ],
         "extra": [
+          {
+            "name": "api_version",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
           {
             "name": "azure_ad_token",
             "type": "unknown",
@@ -2440,24 +2308,6 @@
       "fields": {
         "base": [
           {
-            "name": "api_base",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "api_key",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "api_version",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "auto_router_config",
             "type": "string",
             "required": false,
@@ -2480,30 +2330,6 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "aws_access_key_id",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "aws_bedrock_runtime_endpoint",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_secret_access_key",
-            "type": "string",
-            "required": false,
-            "secret": true
           },
           {
             "name": "budget_duration",
@@ -2590,12 +2416,6 @@
             "secret": false
           },
           {
-            "name": "region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "rpm",
             "type": "number",
             "required": false,
@@ -2648,33 +2468,15 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "vertex_credentials",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "vertex_location",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "vertex_project",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "watsonx_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
           }
         ],
         "extra": [
+          {
+            "name": "api_key",
+            "type": "unknown",
+            "required": false,
+            "secret": true
+          },
           {
             "name": "container",
             "type": "unknown",
@@ -4144,24 +3946,6 @@
       "fields": {
         "base": [
           {
-            "name": "api_base",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "api_key",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "api_version",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "auto_router_config",
             "type": "string",
             "required": false,
@@ -4184,30 +3968,6 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "aws_access_key_id",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "aws_bedrock_runtime_endpoint",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_secret_access_key",
-            "type": "string",
-            "required": false,
-            "secret": true
           },
           {
             "name": "budget_duration",
@@ -4294,12 +4054,6 @@
             "secret": false
           },
           {
-            "name": "region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "rpm",
             "type": "number",
             "required": false,
@@ -4352,35 +4106,29 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "vertex_credentials",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "vertex_location",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "vertex_project",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "watsonx_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
           }
         ],
         "extra": [
           {
+            "name": "api_key",
+            "type": "unknown",
+            "required": false,
+            "secret": true
+          },
+          {
+            "name": "aws_access_key_id",
+            "type": "unknown",
+            "required": false,
+            "secret": true
+          },
+          {
             "name": "aws_batch_role_arn",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "aws_bedrock_runtime_endpoint",
             "type": "unknown",
             "required": false,
             "secret": false
@@ -4398,10 +4146,22 @@
             "secret": false
           },
           {
+            "name": "aws_region_name",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
             "name": "aws_role_name",
             "type": "unknown",
             "required": false,
             "secret": false
+          },
+          {
+            "name": "aws_secret_access_key",
+            "type": "unknown",
+            "required": false,
+            "secret": true
           },
           {
             "name": "aws_session_name",
@@ -4619,24 +4379,6 @@
       "fields": {
         "base": [
           {
-            "name": "api_base",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "api_key",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "api_version",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "auto_router_config",
             "type": "string",
             "required": false,
@@ -4659,30 +4401,6 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "aws_access_key_id",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "aws_bedrock_runtime_endpoint",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_secret_access_key",
-            "type": "string",
-            "required": false,
-            "secret": true
           },
           {
             "name": "budget_duration",
@@ -4769,12 +4487,6 @@
             "secret": false
           },
           {
-            "name": "region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "rpm",
             "type": "number",
             "required": false,
@@ -4827,33 +4539,15 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "vertex_credentials",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "vertex_location",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "vertex_project",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "watsonx_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
           }
         ],
         "extra": [
+          {
+            "name": "api_base",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
           {
             "name": "audioEncoding",
             "type": "unknown",
@@ -5030,6 +4724,24 @@
           },
           {
             "name": "vertex_collection_id",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "vertex_credentials",
+            "type": "unknown",
+            "required": false,
+            "secret": true
+          },
+          {
+            "name": "vertex_location",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "vertex_project",
             "type": "unknown",
             "required": false,
             "secret": false
@@ -5498,24 +5210,6 @@
       "fields": {
         "base": [
           {
-            "name": "api_base",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "api_key",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "api_version",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "auto_router_config",
             "type": "string",
             "required": false,
@@ -5538,30 +5232,6 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "aws_access_key_id",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "aws_bedrock_runtime_endpoint",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_secret_access_key",
-            "type": "string",
-            "required": false,
-            "secret": true
           },
           {
             "name": "budget_duration",
@@ -5648,12 +5318,6 @@
             "secret": false
           },
           {
-            "name": "region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "rpm",
             "type": "number",
             "required": false,
@@ -5706,33 +5370,21 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "vertex_credentials",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "vertex_location",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "vertex_project",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "watsonx_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
           }
         ],
         "extra": [
+          {
+            "name": "api_base",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "api_key",
+            "type": "unknown",
+            "required": false,
+            "secret": true
+          },
           {
             "name": "filters",
             "type": "unknown",
@@ -5831,24 +5483,6 @@
       "fields": {
         "base": [
           {
-            "name": "api_base",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "api_key",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "api_version",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "auto_router_config",
             "type": "string",
             "required": false,
@@ -5871,30 +5505,6 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "aws_access_key_id",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "aws_bedrock_runtime_endpoint",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_secret_access_key",
-            "type": "string",
-            "required": false,
-            "secret": true
           },
           {
             "name": "budget_duration",
@@ -5981,12 +5591,6 @@
             "secret": false
           },
           {
-            "name": "region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "rpm",
             "type": "number",
             "required": false,
@@ -6036,30 +5640,6 @@
           },
           {
             "name": "vector_store_id",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "vertex_credentials",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "vertex_location",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "vertex_project",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "watsonx_region_name",
             "type": "string",
             "required": false,
             "secret": false
@@ -6333,24 +5913,6 @@
       "fields": {
         "base": [
           {
-            "name": "api_base",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "api_key",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "api_version",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "auto_router_config",
             "type": "string",
             "required": false,
@@ -6373,30 +5935,6 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "aws_access_key_id",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "aws_bedrock_runtime_endpoint",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_secret_access_key",
-            "type": "string",
-            "required": false,
-            "secret": true
           },
           {
             "name": "budget_duration",
@@ -6483,12 +6021,6 @@
             "secret": false
           },
           {
-            "name": "region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "rpm",
             "type": "number",
             "required": false,
@@ -6538,30 +6070,6 @@
           },
           {
             "name": "vector_store_id",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "vertex_credentials",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "vertex_location",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "vertex_project",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "watsonx_region_name",
             "type": "string",
             "required": false,
             "secret": false
@@ -6787,24 +6295,6 @@
       "fields": {
         "base": [
           {
-            "name": "api_base",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "api_key",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "api_version",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "auto_router_config",
             "type": "string",
             "required": false,
@@ -6827,30 +6317,6 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "aws_access_key_id",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "aws_bedrock_runtime_endpoint",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "aws_secret_access_key",
-            "type": "string",
-            "required": false,
-            "secret": true
           },
           {
             "name": "budget_duration",
@@ -6937,12 +6403,6 @@
             "secret": false
           },
           {
-            "name": "region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
             "name": "rpm",
             "type": "number",
             "required": false,
@@ -6995,33 +6455,15 @@
             "type": "string",
             "required": false,
             "secret": false
-          },
-          {
-            "name": "vertex_credentials",
-            "type": "string",
-            "required": false,
-            "secret": true
-          },
-          {
-            "name": "vertex_location",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "vertex_project",
-            "type": "string",
-            "required": false,
-            "secret": false
-          },
-          {
-            "name": "watsonx_region_name",
-            "type": "string",
-            "required": false,
-            "secret": false
           }
         ],
         "extra": [
+          {
+            "name": "api_base",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
           {
             "name": "custom_prompt_dict",
             "type": "unknown",

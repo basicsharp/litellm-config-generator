@@ -62,6 +62,13 @@ export function ImportDialog({
           </DialogDescription>
         </DialogHeader>
 
+        <Textarea
+          rows={14}
+          value={content}
+          onChange={(event) => setContent(event.target.value)}
+          placeholder="model_list:\n  - model_name: gpt-4o"
+        />
+
         {pendingModels ? (
           <Alert>
             <AlertTitle>This will replace your current models. Continue?</AlertTitle>
@@ -89,13 +96,6 @@ export function ImportDialog({
             </AlertDescription>
           </Alert>
         ) : null}
-
-        <Textarea
-          rows={14}
-          value={content}
-          onChange={(event) => setContent(event.target.value)}
-          placeholder="model_list:\n  - model_name: gpt-4o"
-        />
 
         {errors.length > 0 ? (
           <Alert variant="destructive">

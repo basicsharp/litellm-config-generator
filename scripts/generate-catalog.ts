@@ -124,12 +124,7 @@ function extractClassBlock(content: string, className: string): string {
 }
 
 function extractBaseFields(routerPy: string): CatalogField[] {
-  const classNames = [
-    'CredentialLiteLLMParams',
-    'GenericLiteLLMParams',
-    'LiteLLM_Params',
-    'CustomPricingLiteLLMParams',
-  ];
+  const classNames = ['GenericLiteLLMParams', 'LiteLLM_Params', 'CustomPricingLiteLLMParams'];
 
   const deduped = new Map<string, CatalogField>();
 

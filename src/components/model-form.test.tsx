@@ -119,10 +119,38 @@ describe('ModelForm provider change behavior', () => {
     expect(screen.getByText('openai_api_key')).not.toBeNull();
     expect(screen.queryByText('anthropic_api_key')).toBeNull();
 
+    await user.click(screen.getByRole('combobox', { name: /add option/i }));
+    await user.click(screen.getByText('openai_api_key'));
+    expect(screen.getByText('openai_api_key')).not.toBeNull();
+
     await user.click(screen.getByRole('button', { name: 'Change Provider' }));
 
-    expect(screen.getByText('anthropic_api_key')).not.toBeNull();
     expect(screen.queryByText('openai_api_key')).toBeNull();
+
+    await user.click(screen.getByRole('combobox', { name: /add option/i }));
+    expect(screen.getByText('anthropic_api_key')).not.toBeNull();
     expect(screen.getByText('temperature')).not.toBeNull();
+  });
+
+  it('removes an added optional field from the form', async () => {
+    const user = userEvent.setup();
+
+    render(<ModelForm entry={makeEntry()} onSave={vi.fn()} />);
+
+    expect(screen.getByText('openai_api_key')).not.toBeNull();
+
+    await user.click(screen.getByRole('button', { name: 'Remove openai_api_key' }));
+    expect(screen.queryByText('openai_api_key')).toBeNull();
+  });
+
+  it('submits in-app without native navigation when Save is clicked', async () => {
+    const user = userEvent.setup();
+    const onSave = vi.fn();
+
+    render(<ModelForm entry={makeEntry()} onSave={onSave} />);
+
+    await user.click(screen.getByRole('button', { name: 'Validate' }));
+
+    expect(onSave).toHaveBeenCalled();
   });
 });

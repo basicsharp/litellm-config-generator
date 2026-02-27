@@ -1,6 +1,7 @@
 'use client';
 
 import React, { startTransition, useCallback, useEffect } from 'react';
+import { Plus, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 import { EnvVarInput } from '@/components/env-var-input';
@@ -8,6 +9,14 @@ import { ModelSelect } from '@/components/model-select';
 import { ProviderSelect } from '@/components/provider-select';
 import { RateLimitFields } from '@/components/rate-limit-fields';
 import { Button } from '@/components/ui/button';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
 import {
   Form,
   FormControl,
@@ -17,9 +26,11 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { getFieldsForProvider } from '@/lib/catalog';
 import { modelEntryResolver } from '@/lib/form-utils';
 import type { EnvVarValue, ModelEntry } from '@/lib/schemas';
+import { Separator } from './ui/separator';
 
 type ModelFormProps = {
   entry: ModelEntry;
@@ -55,7 +66,34 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
 
   const providerId = form.watch('provider');
   const fields = getFieldsForProvider(providerId);
-  const baseFields = fields.base.filter((field) => !EXCLUDED_DYNAMIC_FIELDS.has(field.name));
+
+  const optionalFields = React.useMemo(() => {
+    const merged = [...fields.base, ...fields.extra].filter(
+      (field) => !EXCLUDED_DYNAMIC_FIELDS.has(field.name)
+    );
+    const deduped = new Map(merged.map((field) => [field.name, field]));
+    return Array.from(deduped.values());
+  }, [fields.base, fields.extra]);
+
+  const [addOptionOpen, setAddOptionOpen] = React.useState(false);
+  const [addOptionQuery, setAddOptionQuery] = React.useState('');
+  const [selectedOptionNames, setSelectedOptionNames] = React.useState<string[]>([]);
+
+  useEffect(() => {
+    const currentParams = form.getValues('litellm_params');
+    const selected = optionalFields
+      .filter((field) => Object.prototype.hasOwnProperty.call(currentParams, field.name))
+      .map((field) => field.name);
+    setSelectedOptionNames((current) => {
+      if (
+        current.length === selected.length &&
+        current.every((name, index) => name === selected[index])
+      ) {
+        return current;
+      }
+      return selected;
+    });
+  }, [form, providerId, optionalFields]);
 
   const handleProviderChange = useCallback(
     (newProvider: string) => {
@@ -66,9 +104,43 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
     [form]
   );
 
+  const selectedFields = selectedOptionNames
+    .map((name) => optionalFields.find((field) => field.name === name))
+    .filter((field): field is NonNullable<typeof field> => Boolean(field));
+
+  const availableOptions = optionalFields.filter(
+    (field) => !selectedOptionNames.includes(field.name)
+  );
+
+  const handleAddOption = useCallback((fieldName: string) => {
+    setSelectedOptionNames((current) => {
+      if (current.includes(fieldName)) {
+        return current;
+      }
+      return [...current, fieldName];
+    });
+    setAddOptionOpen(false);
+    setAddOptionQuery('');
+  }, []);
+
+  const handleRemoveOption = useCallback(
+    (fieldName: string) => {
+      setSelectedOptionNames((current) => current.filter((name) => name !== fieldName));
+
+      const currentParams = form.getValues('litellm_params');
+      const nextParams = Object.fromEntries(
+        Object.entries(currentParams).filter(([name]) => name !== fieldName)
+      );
+      form.setValue('litellm_params', nextParams, { shouldDirty: true, shouldTouch: true });
+    },
+    [form]
+  );
+
+  const submitHandler = form.handleSubmit(onSave);
+
   return (
     <Form {...form}>
-      <form onBlur={form.handleSubmit(onSave)} className="space-y-4">
+      <form onSubmit={submitHandler} onBlur={submitHandler} className="space-y-4">
         <FormField
           control={form.control}
           name="model_name"
@@ -121,65 +193,92 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
           )}
         />
 
-        {baseFields.map((field) => (
-          <FormField
-            key={field.name}
-            control={form.control}
-            name={`litellm_params.${field.name}` as `litellm_params.${string}`}
-            render={({ field: formField }) => (
-              <FormItem>
-                <FormLabel>
-                  {field.name}
-                  {field.required && <span className="text-red-500">*</span>}
-                </FormLabel>
-                <FormControl>
-                  <EnvVarInput
-                    value={asEnvValue(formField.value)}
-                    onChange={formField.onChange}
-                    secret={field.secret}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ))}
+        <details className="rounded border p-3">
+          <summary className="text-sm cursor-pointer font-medium">Advanced</summary>
+          <div className="mt-3 space-y-4">
+            <RateLimitFields form={form} />
+          </div>
+        </details>
 
-        {fields.extra.length > 0 && (
-          <details className="border rounded p-3">
-            <summary className="cursor-pointer font-semibold">Advanced</summary>
-            <div className="mt-3 space-y-4">
-              {fields.extra.map((field) => (
-                <FormField
-                  key={field.name}
-                  control={form.control}
-                  name={`litellm_params.${field.name}` as `litellm_params.${string}`}
-                  render={({ field: formField }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {field.name}
-                        {field.required && <span className="text-red-500">*</span>}
-                      </FormLabel>
-                      <FormControl>
-                        <EnvVarInput
-                          value={asEnvValue(formField.value)}
-                          onChange={formField.onChange}
-                          secret={field.secret}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+        <div className="space-y-3 rounded border p-3">
+          <p className="text-sm font-medium">Optional Parameters</p>
+          {selectedFields.map((field) => (
+            <FormField
+              key={field.name}
+              control={form.control}
+              name={`litellm_params.${field.name}` as `litellm_params.${string}`}
+              render={({ field: formField }) => (
+                <FormItem className="space-y-0">
+                  <div className="flex items-center justify-between">
+                    <FormLabel className="text-sm font-medium">{field.name}</FormLabel>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`Remove ${field.name}`}
+                      onClick={() => handleRemoveOption(field.name)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <FormControl>
+                    <EnvVarInput
+                      value={asEnvValue(formField.value)}
+                      onChange={formField.onChange}
+                      secret={field.secret}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
+          <Separator orientation="horizontal" />
+          <Popover open={addOptionOpen} onOpenChange={setAddOptionOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                role="combobox"
+                aria-label="Add option"
+                className="w-full justify-center"
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add option
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+              <Command shouldFilter={false}>
+                <CommandInput
+                  placeholder="Search option..."
+                  value={addOptionQuery}
+                  onValueChange={setAddOptionQuery}
                 />
-              ))}
-            </div>
-          </details>
-        )}
-
-        <RateLimitFields form={form} />
+                <CommandList>
+                  <CommandEmpty>No options found.</CommandEmpty>
+                  <CommandGroup>
+                    {availableOptions
+                      .filter((field) =>
+                        field.name.toLowerCase().includes(addOptionQuery.trim().toLowerCase())
+                      )
+                      .map((field) => (
+                        <CommandItem
+                          key={field.name}
+                          value={field.name}
+                          onSelect={() => handleAddOption(field.name)}
+                        >
+                          {field.name}
+                        </CommandItem>
+                      ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
 
         <Button type="submit" className="w-full">
-          Save
+          Validate
         </Button>
       </form>
     </Form>

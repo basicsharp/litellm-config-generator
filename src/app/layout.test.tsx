@@ -5,8 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 import RootLayout, { metadata } from '@/app/layout';
 
 vi.mock('next/font/google', () => ({
-  Geist: vi.fn(() => ({ variable: 'geist-sans' })),
-  Geist_Mono: vi.fn(() => ({ variable: 'geist-mono' })),
+  Geist: vi.fn(() => ({ className: 'geist-sans' })),
 }));
 
 describe('RootLayout', () => {

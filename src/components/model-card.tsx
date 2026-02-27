@@ -37,7 +37,7 @@ export function ModelCard({ entry, onSave, onDelete, defaultExpanded }: ModelCar
 
   return (
     <Card>
-      <CardHeader className="pb-2">
+      <CardHeader className="p-4 pb-2">
         <div className="flex items-start justify-between gap-2">
           <button
             type="button"
@@ -46,7 +46,7 @@ export function ModelCard({ entry, onSave, onDelete, defaultExpanded }: ModelCar
           >
             <CardTitle className="text-base">{entry.model_name || 'Untitled Model'}</CardTitle>
             <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-              <Badge className={badgeStyle}>{entry.provider}</Badge>
+              <Badge className={`${badgeStyle} shadow-none`}>{entry.provider}</Badge>
               <span className="truncate">{entry.model || 'No model selected'}</span>
             </div>
           </button>
@@ -77,7 +77,7 @@ export function ModelCard({ entry, onSave, onDelete, defaultExpanded }: ModelCar
         </div>
       </CardHeader>
       {expanded ? (
-        <CardContent>
+        <CardContent className="p-4 pt-0">
           <ModelForm entry={entry} onSave={onSave} />
         </CardContent>
       ) : null}
