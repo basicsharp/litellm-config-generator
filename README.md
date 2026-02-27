@@ -43,7 +43,7 @@ Then open `http://localhost:3000`.
 4. Review live YAML in the preview panel.
 5. Click **Download** to save `config.yaml`.
 
-Relevant files: `app/page.tsx`, `components/model-form.tsx`, `components/model-list-panel.tsx`, `components/yaml-preview.tsx`.
+Relevant files: `src/app/page.tsx`, `src/components/model-form.tsx`, `src/components/model-list-panel.tsx`, `src/components/yaml-preview.tsx`.
 
 ### Scenario 3: Import and continue editing existing YAML
 
@@ -52,13 +52,13 @@ Relevant files: `app/page.tsx`, `components/model-form.tsx`, `components/model-l
 3. Resolve any inline parse errors if shown.
 4. Confirm replacement if models already exist.
 
-Relevant files: `components/import-dialog.tsx`, `lib/yaml-parse.ts`.
+Relevant files: `src/components/import-dialog.tsx`, `src/lib/yaml-parse.ts`.
 
 ### Scenario 4: Copy YAML quickly (without download)
 
 Use the **Copy** button in the preview panel to push current YAML to clipboard.
 
-Relevant files: `components/yaml-preview.tsx`, `lib/yaml-gen.ts`.
+Relevant files: `src/components/yaml-preview.tsx`, `src/lib/yaml-gen.ts`.
 
 ### Scenario 5: Validate quality gates before sharing changes
 
@@ -103,13 +103,13 @@ Note: the generator targets the top providers configured in `scripts/generate-ca
 
 ## Project Map
 
-- `app/page.tsx` - main app layout and reducer-driven state wiring
-- `components/` - UI features (toolbar, forms, cards, import, preview)
-- `lib/schemas.ts` - Zod schemas and inferred types
-- `lib/yaml-gen.ts` - state -> YAML serialization
-- `lib/yaml-parse.ts` - YAML -> state parsing
-- `lib/catalog.ts` - typed accessors for `public/catalog.json`
-- `scripts/generate-catalog.ts` - catalog generation script
+- `src/app/page.tsx` - main app layout and reducer-driven state wiring
+- `src/components/` - UI features (toolbar, forms, cards, import, preview)
+- `src/lib/schemas.ts` - Zod schemas and inferred types
+- `src/lib/yaml-gen.ts` - state -> YAML serialization
+- `src/lib/yaml-parse.ts` - YAML -> state parsing
+- `src/lib/catalog.ts` - typed accessors for `public/catalog.json`
+- `scripts/generate-catalog.ts` - catalog generation script (repo root, not in `src/`)
 
 ## Troubleshooting
 

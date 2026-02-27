@@ -127,14 +127,14 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
             render={({ field: formField }) => (
               <FormItem>
                 <FormLabel>
-                  {field.label}
+                  {field.name}
                   {field.required && <span className="text-red-500">*</span>}
                 </FormLabel>
                 <FormControl>
                   <EnvVarInput
                     value={asEnvValue(formField.value)}
                     onChange={formField.onChange}
-                    isSecret={field.secret}
+                    secret={field.secret}
                   />
                 </FormControl>
                 <FormMessage />
@@ -155,14 +155,14 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
                   render={({ field: formField }) => (
                     <FormItem>
                       <FormLabel>
-                        {field.label}
+                        {field.name}
                         {field.required && <span className="text-red-500">*</span>}
                       </FormLabel>
                       <FormControl>
                         <EnvVarInput
                           value={asEnvValue(formField.value)}
                           onChange={formField.onChange}
-                          isSecret={field.secret}
+                          secret={field.secret}
                         />
                       </FormControl>
                       <FormMessage />
@@ -174,7 +174,7 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
           </details>
         )}
 
-        <RateLimitFields control={form.control} />
+        <RateLimitFields form={form} />
 
         <Button type="submit" className="w-full">
           Save

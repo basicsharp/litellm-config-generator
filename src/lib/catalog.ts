@@ -1,4 +1,4 @@
-import catalogData from '@/public/catalog.json';
+import catalogData from '../../public/catalog.json';
 
 export type CatalogField = {
   name: string;
