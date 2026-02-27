@@ -61,6 +61,10 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
     mode: 'onSubmit',
   });
 
+  const submitHandler = useCallback(() => {
+    void form.handleSubmit(onSave)();
+  }, [form, onSave]);
+
   useEffect(() => {
     form.reset(entry);
   }, [entry, form]);
@@ -147,11 +151,22 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
     [form]
   );
 
-  const submitHandler = form.handleSubmit(onSave);
+  useEffect(() => {
+    const subscription = form.watch((_values, { type }) => {
+      if (type !== 'change') {
+        return;
+      }
+      submitHandler();
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [form, submitHandler]);
 
   return (
     <Form {...form}>
-      <form onSubmit={submitHandler} onBlur={submitHandler} className="space-y-4">
+      <form onSubmit={submitHandler} className="space-y-4">
         <FormField
           control={form.control}
           name="model_name"

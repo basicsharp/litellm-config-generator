@@ -2,6 +2,7 @@ import React from 'react';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { codeToHtml } from 'shiki';
 
 import type { ModelEntry } from '@/lib/schemas';
 import { EnvVarInput } from '@/components/env-var-input';
@@ -46,6 +47,16 @@ const baseEntry: ModelEntry = {
   provider: 'openai',
   model: 'gpt-4o-mini',
   litellm_params: {},
+};
+
+const altEntry: ModelEntry = {
+  ...baseEntry,
+  id: 'm-2',
+  model_name: 'alt-model',
+};
+
+const waitForMicrotasks = async () => {
+  await Promise.resolve();
 };
 
 describe('app component smoke', () => {
@@ -130,6 +141,27 @@ describe('app component smoke', () => {
     expect(onDelete).toHaveBeenCalledTimes(1);
   });
 
+  it('renders model-card fallback title/model text for empty values', () => {
+    const entryWithFallbacks: ModelEntry = {
+      ...baseEntry,
+      provider: 'custom_provider',
+      model_name: '',
+      model: '',
+    };
+
+    render(
+      <ModelCard
+        entry={entryWithFallbacks}
+        onSave={vi.fn()}
+        onDelete={vi.fn()}
+        defaultExpanded={false}
+      />
+    );
+
+    expect(screen.getByText('Untitled Model')).not.toBeNull();
+    expect(screen.getByText('No model selected')).not.toBeNull();
+  });
+
   it('handles import dialog parse errors and success', async () => {
     const user = userEvent.setup();
     const onImport = vi.fn();
@@ -196,6 +228,190 @@ describe('app component smoke', () => {
 
     unmount();
     expect(true).toBe(true);
+  });
+
+  it('debounces highlight calls until 250ms idle after model changes', async () => {
+    vi.useFakeTimers();
+    const codeToHtmlMock = vi.mocked(codeToHtml);
+    codeToHtmlMock.mockResolvedValue('<pre>ok</pre>');
+
+    const { rerender } = render(<YamlPreview models={[baseEntry]} />);
+
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+      await waitForMicrotasks();
+    });
+    codeToHtmlMock.mockClear();
+
+    rerender(<YamlPreview models={[altEntry]} />);
+
+    await act(async () => {
+      vi.advanceTimersByTime(249);
+      await waitForMicrotasks();
+    });
+    expect(codeToHtmlMock).not.toHaveBeenCalled();
+
+    await act(async () => {
+      vi.advanceTimersByTime(1);
+      await waitForMicrotasks();
+    });
+    expect(codeToHtmlMock).toHaveBeenCalledTimes(1);
+
+    vi.useRealTimers();
+  });
+
+  it('coalesces multiple model changes within debounce window into one highlight call', async () => {
+    vi.useFakeTimers();
+    const codeToHtmlMock = vi.mocked(codeToHtml);
+    codeToHtmlMock.mockResolvedValue('<pre>ok</pre>');
+
+    const { rerender } = render(<YamlPreview models={[baseEntry]} />);
+
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+      await waitForMicrotasks();
+    });
+    codeToHtmlMock.mockClear();
+
+    const entryA: ModelEntry = { ...baseEntry, id: 'm-a', model_name: 'first-change' };
+    const entryB: ModelEntry = { ...baseEntry, id: 'm-b', model_name: 'final-change' };
+
+    rerender(<YamlPreview models={[entryA]} />);
+    await act(async () => {
+      vi.advanceTimersByTime(125);
+    });
+
+    rerender(<YamlPreview models={[entryB]} />);
+    await act(async () => {
+      vi.advanceTimersByTime(249);
+      await waitForMicrotasks();
+    });
+    expect(codeToHtmlMock).toHaveBeenCalledTimes(0);
+
+    await act(async () => {
+      vi.advanceTimersByTime(1);
+      await waitForMicrotasks();
+    });
+
+    expect(codeToHtmlMock).toHaveBeenCalledTimes(1);
+    expect(String(codeToHtmlMock.mock.calls[0]?.[0] ?? '')).toContain('final-change');
+
+    vi.useRealTimers();
+  });
+
+  it('copies latest yaml text even while highlight debounce is pending', async () => {
+    vi.useFakeTimers();
+    const codeToHtmlMock = vi.mocked(codeToHtml);
+    codeToHtmlMock.mockResolvedValue('<pre>ok</pre>');
+
+    const writeTextSpy = vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue(undefined);
+    const { rerender } = render(<YamlPreview models={[baseEntry]} />);
+
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+      await waitForMicrotasks();
+    });
+
+    const freshEntry: ModelEntry = { ...baseEntry, id: 'm-fresh', model_name: 'fresh-copy-model' };
+    rerender(<YamlPreview models={[freshEntry]} />);
+
+    await act(async () => {
+      screen.getByRole('button', { name: 'Copy' }).click();
+      await waitForMicrotasks();
+    });
+
+    expect(writeTextSpy).toHaveBeenCalledTimes(1);
+    expect(String(writeTextSpy.mock.calls[0]?.[0] ?? '')).toContain('fresh-copy-model');
+
+    vi.useRealTimers();
+  });
+
+  it('shows stale opacity class while debounce is pending and clears after highlight', async () => {
+    vi.useFakeTimers();
+    const codeToHtmlMock = vi.mocked(codeToHtml);
+    codeToHtmlMock.mockResolvedValue('<pre>ok</pre>');
+
+    const { rerender } = render(<YamlPreview models={[baseEntry]} />);
+
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+      await waitForMicrotasks();
+    });
+
+    const staleTarget: ModelEntry = { ...baseEntry, id: 'm-stale', model_name: 'stale-model' };
+    rerender(<YamlPreview models={[staleTarget]} />);
+
+    const preview = screen.getByTestId('yaml-highlighted-preview');
+    expect(preview.className).toContain('opacity-60');
+
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+      await waitForMicrotasks();
+    });
+
+    expect(screen.getByTestId('yaml-highlighted-preview').className).not.toContain('opacity-60');
+
+    vi.useRealTimers();
+  });
+
+  it('ignores stale in-flight highlight results when newer models arrive', async () => {
+    vi.useFakeTimers();
+    const codeToHtmlMock = vi.mocked(codeToHtml);
+
+    let resolveFirst: ((html: string) => void) | null = null;
+    let resolveSecond: ((html: string) => void) | null = null;
+
+    codeToHtmlMock.mockImplementation((yamlText: string) => {
+      if (yamlText.includes('stale-source')) {
+        return new Promise<string>((resolve) => {
+          resolveFirst = resolve;
+        });
+      }
+      return new Promise<string>((resolve) => {
+        resolveSecond = resolve;
+      });
+    });
+
+    const staleSource: ModelEntry = {
+      ...baseEntry,
+      id: 'm-stale-source',
+      model_name: 'stale-source',
+    };
+    const freshSource: ModelEntry = {
+      ...baseEntry,
+      id: 'm-fresh-source',
+      model_name: 'fresh-source',
+    };
+
+    const { rerender } = render(<YamlPreview models={[staleSource]} />);
+
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+      await waitForMicrotasks();
+    });
+
+    rerender(<YamlPreview models={[freshSource]} />);
+
+    await act(async () => {
+      vi.advanceTimersByTime(250);
+      await waitForMicrotasks();
+    });
+
+    await act(async () => {
+      resolveFirst?.('<pre>STALE_HTML</pre>');
+      await waitForMicrotasks();
+    });
+
+    await act(async () => {
+      resolveSecond?.('<pre>FRESH_HTML</pre>');
+      await waitForMicrotasks();
+    });
+
+    const preview = screen.getByTestId('yaml-highlighted-preview');
+    expect(preview.innerHTML).toContain('FRESH_HTML');
+    expect(preview.innerHTML).not.toContain('STALE_HTML');
+
+    vi.useRealTimers();
   });
 
   it('toggles env-var input modes and secret visibility', async () => {

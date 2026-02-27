@@ -45,6 +45,12 @@ vi.mock('@/lib/catalog', () => ({
           required: false,
           secret: false,
         },
+        {
+          name: 'use_psc_endpoint_format',
+          type: 'boolean',
+          required: false,
+          secret: false,
+        },
       ],
     };
   },
@@ -148,5 +154,35 @@ describe('ModelForm provider change behavior', () => {
 
     await user.click(screen.getByRole('button', { name: 'Remove openai_api_key' }));
     expect(screen.queryByText('openai_api_key')).toBeNull();
+  });
+
+  it('saves while typing without requiring blur', async () => {
+    const user = userEvent.setup();
+    const onSave = vi.fn();
+
+    render(<ModelForm entry={makeEntry()} onSave={onSave} />);
+
+    const aliasInput = screen.getByLabelText('Model Alias');
+    await user.clear(aliasInput);
+    await user.type(aliasInput, 'live-update');
+
+    expect(onSave).toHaveBeenCalled();
+    expect(onSave.mock.calls.at(-1)?.[0]?.model_name).toBe('live-update');
+  });
+
+  it('saves boolean option changes immediately without blur', async () => {
+    const user = userEvent.setup();
+    const onSave = vi.fn();
+
+    render(<ModelForm entry={makeEntry()} onSave={onSave} />);
+
+    await user.click(screen.getByRole('combobox', { name: /add option/i }));
+    await user.click(screen.getByText('use_psc_endpoint_format'));
+
+    await user.click(screen.getByRole('radio', { name: 'True' }));
+
+    expect(onSave).toHaveBeenCalled();
+    const latest = onSave.mock.calls.at(-1)?.[0];
+    expect(latest?.litellm_params?.use_psc_endpoint_format).toBe(true);
   });
 });
