@@ -148,4 +148,18 @@ describe('additional lib coverage', () => {
     expect(output).not.toContain('empty_env');
     expect(output).not.toContain('empty_literal');
   });
+
+  it('prefixes model with provider for non-openai providers', () => {
+    const output = configToYaml([
+      {
+        id: 'm2',
+        model_name: 'vertex-alias',
+        provider: 'vertex_ai',
+        model: 'gemini-3-pro-preview',
+        litellm_params: {},
+      },
+    ]);
+
+    expect(output).toContain('model: vertex_ai/gemini-3-pro-preview');
+  });
 });

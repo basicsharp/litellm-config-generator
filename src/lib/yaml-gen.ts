@@ -33,10 +33,17 @@ function withOptionalNumber(
   }
 }
 
+function buildModelValue(provider: string, model: string): string {
+  if (!model || model.includes('/') || provider === 'openai' || provider === 'unknown') {
+    return model;
+  }
+  return `${provider}/${model}`;
+}
+
 export function configToYaml(models: ModelEntry[]): string {
   const model_list = models.map((entry) => {
     const litellm_params: Record<string, YamlPrimitive> = {
-      model: entry.model,
+      model: buildModelValue(entry.provider, entry.model),
     };
 
     for (const [key, value] of Object.entries(entry.litellm_params)) {
