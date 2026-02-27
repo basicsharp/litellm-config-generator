@@ -49,6 +49,7 @@ type ModelPriceRecord = {
 const TARGET_PROVIDERS = [
   'openai',
   'azure',
+  'azure_ai',
   'anthropic',
   'bedrock',
   'vertex_ai',
@@ -62,6 +63,7 @@ const TARGET_PROVIDERS = [
 const PROVIDER_LABELS: Record<string, string> = {
   openai: 'OpenAI',
   azure: 'Azure OpenAI',
+  azure_ai: 'Azure AI',
   anthropic: 'Anthropic',
   bedrock: 'AWS Bedrock',
   vertex_ai: 'Vertex AI',

@@ -14,6 +14,11 @@ describe('normalizeProviderId', () => {
     expect(normalizeProviderId('openai')).toBe('openai');
     expect(normalizeProviderId('gemini')).toBe('gemini');
     expect(normalizeProviderId('bedrock')).toBe('bedrock');
+    expect(normalizeProviderId('azure_ai')).toBe('azure_ai');
+  });
+
+  it('maps azure_text to azure', () => {
+    expect(normalizeProviderId('azure_text')).toBe('azure');
   });
 
   it('preserves undefined input', () => {

@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-02-27T15:16:21.818Z",
+    "generatedAt": "2026-02-27T15:45:38.383Z",
     "litellmSubmodulePath": "litellm"
   },
   "providers": {
@@ -1192,6 +1192,13 @@
           "outputCostPerToken": 0.0000015
         },
         {
+          "id": "azure/gpt-3.5-turbo-instruct-0914",
+          "mode": "completion",
+          "maxTokens": 4097,
+          "inputCostPerToken": 0.0000015,
+          "outputCostPerToken": 0.000002
+        },
+        {
           "id": "azure/gpt-35-turbo",
           "mode": "chat",
           "maxTokens": 4096,
@@ -1239,6 +1246,20 @@
           "maxTokens": 4096,
           "inputCostPerToken": 0.000003,
           "outputCostPerToken": 0.000004
+        },
+        {
+          "id": "azure/gpt-35-turbo-instruct",
+          "mode": "completion",
+          "maxTokens": 4097,
+          "inputCostPerToken": 0.0000015,
+          "outputCostPerToken": 0.000002
+        },
+        {
+          "id": "azure/gpt-35-turbo-instruct-0914",
+          "mode": "completion",
+          "maxTokens": 4097,
+          "inputCostPerToken": 0.0000015,
+          "outputCostPerToken": 0.000002
         },
         {
           "id": "azure/gpt-4",
@@ -2091,6 +2112,667 @@
           },
           {
             "name": "tenant_id",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          }
+        ]
+      }
+    },
+    "azure_ai": {
+      "label": "Azure AI",
+      "models": [
+        {
+          "id": "azure_ai/claude-haiku-4-5",
+          "mode": "chat",
+          "maxTokens": 64000,
+          "inputCostPerToken": 0.000001,
+          "outputCostPerToken": 0.000005
+        },
+        {
+          "id": "azure_ai/claude-opus-4-1",
+          "mode": "chat",
+          "maxTokens": 32000,
+          "inputCostPerToken": 0.000015,
+          "outputCostPerToken": 0.000075
+        },
+        {
+          "id": "azure_ai/claude-opus-4-5",
+          "mode": "chat",
+          "maxTokens": 64000,
+          "inputCostPerToken": 0.000005,
+          "outputCostPerToken": 0.000025
+        },
+        {
+          "id": "azure_ai/claude-opus-4-6",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 0.000005,
+          "outputCostPerToken": 0.000025
+        },
+        {
+          "id": "azure_ai/claude-sonnet-4-5",
+          "mode": "chat",
+          "maxTokens": 64000,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "azure_ai/deepseek-r1",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.00000135,
+          "outputCostPerToken": 0.0000054
+        },
+        {
+          "id": "azure_ai/deepseek-v3",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.00000114,
+          "outputCostPerToken": 0.00000456
+        },
+        {
+          "id": "azure_ai/deepseek-v3-0324",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.00000114,
+          "outputCostPerToken": 0.00000456
+        },
+        {
+          "id": "azure_ai/deepseek-v3.2",
+          "mode": "chat",
+          "maxTokens": 163840,
+          "inputCostPerToken": 5.8e-7,
+          "outputCostPerToken": 0.00000168
+        },
+        {
+          "id": "azure_ai/deepseek-v3.2-speciale",
+          "mode": "chat",
+          "maxTokens": 163840,
+          "inputCostPerToken": 5.8e-7,
+          "outputCostPerToken": 0.00000168
+        },
+        {
+          "id": "azure_ai/global/grok-3",
+          "mode": "chat",
+          "maxTokens": 131072,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "azure_ai/global/grok-3-mini",
+          "mode": "chat",
+          "maxTokens": 131072,
+          "inputCostPerToken": 2.5e-7,
+          "outputCostPerToken": 0.00000127
+        },
+        {
+          "id": "azure_ai/gpt-oss-120b",
+          "mode": "chat",
+          "maxTokens": 131072,
+          "inputCostPerToken": 1.5e-7,
+          "outputCostPerToken": 6e-7
+        },
+        {
+          "id": "azure_ai/grok-3",
+          "mode": "chat",
+          "maxTokens": 131072,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "azure_ai/grok-3-mini",
+          "mode": "chat",
+          "maxTokens": 131072,
+          "inputCostPerToken": 2.5e-7,
+          "outputCostPerToken": 0.00000127
+        },
+        {
+          "id": "azure_ai/grok-4",
+          "mode": "chat",
+          "maxTokens": 131072,
+          "inputCostPerToken": 0.000003,
+          "outputCostPerToken": 0.000015
+        },
+        {
+          "id": "azure_ai/grok-4-fast-non-reasoning",
+          "mode": "chat",
+          "maxTokens": 131072,
+          "inputCostPerToken": 2e-7,
+          "outputCostPerToken": 5e-7
+        },
+        {
+          "id": "azure_ai/grok-4-fast-reasoning",
+          "mode": "chat",
+          "maxTokens": 131072,
+          "inputCostPerToken": 2e-7,
+          "outputCostPerToken": 5e-7
+        },
+        {
+          "id": "azure_ai/grok-code-fast-1",
+          "mode": "chat",
+          "maxTokens": 131072,
+          "inputCostPerToken": 2e-7,
+          "outputCostPerToken": 0.0000015
+        },
+        {
+          "id": "azure_ai/jais-30b-chat",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.0032,
+          "outputCostPerToken": 0.00971
+        },
+        {
+          "id": "azure_ai/jamba-instruct",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 5e-7,
+          "outputCostPerToken": 7e-7
+        },
+        {
+          "id": "azure_ai/kimi-k2.5",
+          "mode": "chat",
+          "maxTokens": 262144,
+          "inputCostPerToken": 6e-7,
+          "outputCostPerToken": 0.000003
+        },
+        {
+          "id": "azure_ai/Llama-3.2-11B-Vision-Instruct",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 3.7e-7,
+          "outputCostPerToken": 3.7e-7
+        },
+        {
+          "id": "azure_ai/Llama-3.2-90B-Vision-Instruct",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 0.00000204,
+          "outputCostPerToken": 0.00000204
+        },
+        {
+          "id": "azure_ai/Llama-3.3-70B-Instruct",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 7.1e-7,
+          "outputCostPerToken": 7.1e-7
+        },
+        {
+          "id": "azure_ai/Llama-4-Maverick-17B-128E-Instruct-FP8",
+          "mode": "chat",
+          "maxTokens": 16384,
+          "inputCostPerToken": 0.00000141,
+          "outputCostPerToken": 3.5e-7
+        },
+        {
+          "id": "azure_ai/Llama-4-Scout-17B-16E-Instruct",
+          "mode": "chat",
+          "maxTokens": 16384,
+          "inputCostPerToken": 2e-7,
+          "outputCostPerToken": 7.8e-7
+        },
+        {
+          "id": "azure_ai/MAI-DS-R1",
+          "mode": "chat",
+          "maxTokens": 8192,
+          "inputCostPerToken": 0.00000135,
+          "outputCostPerToken": 0.0000054
+        },
+        {
+          "id": "azure_ai/Meta-Llama-3-70B-Instruct",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 0.0000011,
+          "outputCostPerToken": 3.7e-7
+        },
+        {
+          "id": "azure_ai/Meta-Llama-3.1-405B-Instruct",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 0.00000533,
+          "outputCostPerToken": 0.000016
+        },
+        {
+          "id": "azure_ai/Meta-Llama-3.1-70B-Instruct",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 0.00000268,
+          "outputCostPerToken": 0.00000354
+        },
+        {
+          "id": "azure_ai/Meta-Llama-3.1-8B-Instruct",
+          "mode": "chat",
+          "maxTokens": 2048,
+          "inputCostPerToken": 3e-7,
+          "outputCostPerToken": 6.1e-7
+        },
+        {
+          "id": "azure_ai/ministral-3b",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 4e-8,
+          "outputCostPerToken": 4e-8
+        },
+        {
+          "id": "azure_ai/mistral-large",
+          "mode": "chat",
+          "maxTokens": 8191,
+          "inputCostPerToken": 0.000004,
+          "outputCostPerToken": 0.000012
+        },
+        {
+          "id": "azure_ai/mistral-large-2407",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 0.000002,
+          "outputCostPerToken": 0.000006
+        },
+        {
+          "id": "azure_ai/mistral-large-3",
+          "mode": "chat",
+          "maxTokens": 8191,
+          "inputCostPerToken": 5e-7,
+          "outputCostPerToken": 0.0000015
+        },
+        {
+          "id": "azure_ai/mistral-large-latest",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 0.000002,
+          "outputCostPerToken": 0.000006
+        },
+        {
+          "id": "azure_ai/mistral-medium-2505",
+          "mode": "chat",
+          "maxTokens": 8191,
+          "inputCostPerToken": 4e-7,
+          "outputCostPerToken": 0.000002
+        },
+        {
+          "id": "azure_ai/mistral-nemo",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 1.5e-7,
+          "outputCostPerToken": 1.5e-7
+        },
+        {
+          "id": "azure_ai/mistral-small",
+          "mode": "chat",
+          "maxTokens": 8191,
+          "inputCostPerToken": 0.000001,
+          "outputCostPerToken": 0.000003
+        },
+        {
+          "id": "azure_ai/mistral-small-2503",
+          "mode": "chat",
+          "maxTokens": 128000,
+          "inputCostPerToken": 0.000001,
+          "outputCostPerToken": 0.000003
+        },
+        {
+          "id": "azure_ai/model_router",
+          "mode": "chat",
+          "maxTokens": null,
+          "inputCostPerToken": 1.4e-7,
+          "outputCostPerToken": 0
+        },
+        {
+          "id": "azure_ai/Phi-3-medium-128k-instruct",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 1.7e-7,
+          "outputCostPerToken": 6.8e-7
+        },
+        {
+          "id": "azure_ai/Phi-3-medium-4k-instruct",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 1.7e-7,
+          "outputCostPerToken": 6.8e-7
+        },
+        {
+          "id": "azure_ai/Phi-3-mini-128k-instruct",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 1.3e-7,
+          "outputCostPerToken": 5.2e-7
+        },
+        {
+          "id": "azure_ai/Phi-3-mini-4k-instruct",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 1.3e-7,
+          "outputCostPerToken": 5.2e-7
+        },
+        {
+          "id": "azure_ai/Phi-3-small-128k-instruct",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 1.5e-7,
+          "outputCostPerToken": 6e-7
+        },
+        {
+          "id": "azure_ai/Phi-3-small-8k-instruct",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 1.5e-7,
+          "outputCostPerToken": 6e-7
+        },
+        {
+          "id": "azure_ai/Phi-3.5-mini-instruct",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 1.3e-7,
+          "outputCostPerToken": 5.2e-7
+        },
+        {
+          "id": "azure_ai/Phi-3.5-MoE-instruct",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 1.6e-7,
+          "outputCostPerToken": 6.4e-7
+        },
+        {
+          "id": "azure_ai/Phi-3.5-vision-instruct",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 1.3e-7,
+          "outputCostPerToken": 5.2e-7
+        },
+        {
+          "id": "azure_ai/Phi-4",
+          "mode": "chat",
+          "maxTokens": 16384,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 5e-7
+        },
+        {
+          "id": "azure_ai/Phi-4-mini-instruct",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 7.5e-8,
+          "outputCostPerToken": 3e-7
+        },
+        {
+          "id": "azure_ai/Phi-4-mini-reasoning",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 8e-8,
+          "outputCostPerToken": 3.2e-7
+        },
+        {
+          "id": "azure_ai/Phi-4-multimodal-instruct",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 8e-8,
+          "outputCostPerToken": 3.2e-7
+        },
+        {
+          "id": "azure_ai/Phi-4-reasoning",
+          "mode": "chat",
+          "maxTokens": 4096,
+          "inputCostPerToken": 1.25e-7,
+          "outputCostPerToken": 5e-7
+        }
+      ],
+      "fields": {
+        "base": [
+          {
+            "name": "auto_router_config",
+            "type": "string",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "auto_router_config_path",
+            "type": "string",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "auto_router_default_model",
+            "type": "string",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "auto_router_embedding_model",
+            "type": "string",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "budget_duration",
+            "type": "string",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "configurable_clientside_auth_params",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "custom_llm_provider",
+            "type": "string",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "gcs_bucket_name",
+            "type": "string",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "litellm_credential_name",
+            "type": "string",
+            "required": false,
+            "secret": true
+          },
+          {
+            "name": "litellm_trace_id",
+            "type": "string",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "max_budget",
+            "type": "number",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "max_file_size_mb",
+            "type": "number",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "max_retries",
+            "type": "number",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "merge_reasoning_content_in_choices",
+            "type": "boolean",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "milvus_text_field",
+            "type": "string",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "mock_response",
+            "type": "string",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "model",
+            "type": "string",
+            "required": true,
+            "secret": false
+          },
+          {
+            "name": "model_info",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "rpm",
+            "type": "number",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "s3_bucket_name",
+            "type": "string",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "s3_encryption_key_id",
+            "type": "string",
+            "required": false,
+            "secret": true
+          },
+          {
+            "name": "stream_timeout",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "timeout",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "tpm",
+            "type": "number",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "use_in_pass_through",
+            "type": "boolean",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "use_litellm_proxy",
+            "type": "boolean",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "vector_store_id",
+            "type": "string",
+            "required": false,
+            "secret": false
+          }
+        ],
+        "extra": [
+          {
+            "name": "agent_id",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "api_base",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "api_key",
+            "type": "unknown",
+            "required": false,
+            "secret": true
+          },
+          {
+            "name": "api_version",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "assistant_id",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "azure_search_service_name",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "azure_search_vector_field",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "drop_params",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "is_vertex_request",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "litellm_embedding_config",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "litellm_embedding_model",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "mcp_servers",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "ssl_verify",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "thread_id",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "tools",
+            "type": "unknown",
+            "required": false,
+            "secret": false
+          },
+          {
+            "name": "top_k",
             "type": "unknown",
             "required": false,
             "secret": false
