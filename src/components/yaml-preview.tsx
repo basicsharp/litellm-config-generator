@@ -30,7 +30,7 @@ export function YamlPreview({ models }: YamlPreviewProps) {
   }, [yamlText]);
 
   return (
-    <div className="sticky top-0 flex h-screen flex-col gap-3 overflow-y-auto rounded-lg border bg-card p-4">
+    <div className="sticky top-0 flex flex-col gap-3 overflow-y-auto rounded-lg border bg-card p-4">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold">YAML Preview</h2>
         <Button
