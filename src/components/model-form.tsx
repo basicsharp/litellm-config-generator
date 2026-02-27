@@ -98,7 +98,7 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
   const handleProviderChange = useCallback(
     (newProvider: string) => {
       startTransition(() => {
-        form.reset({ ...form.getValues(), provider: newProvider, litellm_params: {} });
+        form.reset({ ...form.getValues(), provider: newProvider, model: '', litellm_params: {} });
       });
     },
     [form]
@@ -276,10 +276,6 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
             </PopoverContent>
           </Popover>
         </div>
-
-        <Button type="submit" className="w-full">
-          Validate
-        </Button>
       </form>
     </Form>
   );

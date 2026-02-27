@@ -68,8 +68,11 @@ vi.mock('@/components/provider-select', () => ({
 }));
 
 vi.mock('@/components/model-select', () => ({
-  ModelSelect: ({ providerId }: { providerId: string }) => (
-    <div data-testid="model-select-provider">{providerId}</div>
+  ModelSelect: ({ providerId, value }: { providerId: string; value: string }) => (
+    <div>
+      <div data-testid="model-select-provider">{providerId}</div>
+      <div data-testid="model-select-value">{value}</div>
+    </div>
   ),
 }));
 
@@ -104,11 +107,15 @@ describe('ModelForm provider change behavior', () => {
 
     expect(screen.getByTestId('provider-value').textContent).toBe('openai');
     expect(screen.getByTestId('model-select-provider').textContent).toBe('openai');
+    expect(screen.getByTestId('model-select-value').textContent).toBe('gpt-4o-mini');
+    expect((screen.getByLabelText('Model Alias') as HTMLInputElement).value).toBe('my-model');
 
     await user.click(screen.getByRole('button', { name: 'Change Provider' }));
 
     expect(screen.getByTestId('provider-value').textContent).toBe('anthropic');
     expect(screen.getByTestId('model-select-provider').textContent).toBe('anthropic');
+    expect(screen.getByTestId('model-select-value').textContent).toBe('');
+    expect((screen.getByLabelText('Model Alias') as HTMLInputElement).value).toBe('my-model');
   });
 
   it('updates provider-specific form fields after provider switch', async () => {
@@ -141,16 +148,5 @@ describe('ModelForm provider change behavior', () => {
 
     await user.click(screen.getByRole('button', { name: 'Remove openai_api_key' }));
     expect(screen.queryByText('openai_api_key')).toBeNull();
-  });
-
-  it('submits in-app without native navigation when Save is clicked', async () => {
-    const user = userEvent.setup();
-    const onSave = vi.fn();
-
-    render(<ModelForm entry={makeEntry()} onSave={onSave} />);
-
-    await user.click(screen.getByRole('button', { name: 'Validate' }));
-
-    expect(onSave).toHaveBeenCalled();
   });
 });

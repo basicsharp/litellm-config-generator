@@ -66,7 +66,7 @@ export function ImportDialog({
           rows={14}
           value={content}
           onChange={(event) => setContent(event.target.value)}
-          placeholder="model_list:\n  - model_name: gpt-4o"
+          placeholder={'model_list:\n  - model_name: gpt-4o'}
         />
 
         {pendingModels ? (
