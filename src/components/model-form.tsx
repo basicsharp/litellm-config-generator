@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 
 import { EnvVarInput } from '@/components/env-var-input';
 import { ModelSelect } from '@/components/model-select';
+import { BooleanEnvVarInput } from '@/components/boolean-env-var-input';
 import { ProviderSelect } from '@/components/provider-select';
 import { RateLimitFields } from '@/components/rate-limit-fields';
 import { Button } from '@/components/ui/button';
@@ -112,16 +113,26 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
     (field) => !selectedOptionNames.includes(field.name)
   );
 
-  const handleAddOption = useCallback((fieldName: string) => {
-    setSelectedOptionNames((current) => {
-      if (current.includes(fieldName)) {
-        return current;
+  const handleAddOption = useCallback(
+    (fieldName: string) => {
+      setSelectedOptionNames((current) => {
+        if (current.includes(fieldName)) {
+          return current;
+        }
+        return [...current, fieldName];
+      });
+      const addedField = optionalFields.find((f) => f.name === fieldName);
+      if (addedField?.type === 'boolean') {
+        form.setValue(`litellm_params.${fieldName}` as `litellm_params.${string}`, false, {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
       }
-      return [...current, fieldName];
-    });
-    setAddOptionOpen(false);
-    setAddOptionQuery('');
-  }, []);
+      setAddOptionOpen(false);
+      setAddOptionQuery('');
+    },
+    [form, optionalFields]
+  );
 
   const handleRemoveOption = useCallback(
     (fieldName: string) => {
@@ -222,11 +233,18 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
                     </Button>
                   </div>
                   <FormControl>
-                    <EnvVarInput
-                      value={asEnvValue(formField.value)}
-                      onChange={formField.onChange}
-                      secret={field.secret}
-                    />
+                    {field.type === 'boolean' ? (
+                      <BooleanEnvVarInput
+                        value={formField.value as boolean | undefined}
+                        onChange={formField.onChange}
+                      />
+                    ) : (
+                      <EnvVarInput
+                        value={asEnvValue(formField.value)}
+                        onChange={formField.onChange}
+                        secret={field.secret}
+                      />
+                    )}
                   </FormControl>
                   <FormMessage />
                 </FormItem>

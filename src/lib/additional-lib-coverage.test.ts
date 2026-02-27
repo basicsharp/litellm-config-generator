@@ -138,7 +138,7 @@ describe('additional lib coverage', () => {
     expect(output).toContain('model_name: alias-1');
     expect(output).toContain('api_key: os.environ/OPENAI_API_KEY');
     expect(output).toContain('endpoint: https://example.com');
-    expect(output).toContain('should_keep: true');
+    expect(output).toContain('should_keep: True');
     expect(output).toContain('timeout_ms: 120');
     expect(output).toContain('rpm: 10');
     expect(output).toContain('tpm: 20');

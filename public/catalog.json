@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-02-27T15:45:38.383Z",
+    "generatedAt": "2026-02-27T17:24:21.250Z",
     "litellmSubmodulePath": "litellm"
   },
   "providers": {
@@ -896,7 +896,7 @@
           },
           {
             "name": "async_call",
-            "type": "unknown",
+            "type": "boolean",
             "required": false,
             "secret": false
           },
@@ -944,13 +944,13 @@
           },
           {
             "name": "output_format",
-            "type": "unknown",
+            "type": "string",
             "required": false,
             "secret": false
           },
           {
             "name": "quality",
-            "type": "unknown",
+            "type": "string",
             "required": false,
             "secret": false
           },
@@ -968,7 +968,7 @@
           },
           {
             "name": "response_format",
-            "type": "unknown",
+            "type": "string",
             "required": false,
             "secret": false
           },
@@ -980,13 +980,13 @@
           },
           {
             "name": "size",
-            "type": "unknown",
+            "type": "string",
             "required": false,
             "secret": false
           },
           {
             "name": "stream",
-            "type": "unknown",
+            "type": "boolean",
             "required": false,
             "secret": false
           },
@@ -2070,13 +2070,13 @@
           },
           {
             "name": "output_format",
-            "type": "unknown",
+            "type": "string",
             "required": false,
             "secret": false
           },
           {
             "name": "rate",
-            "type": "unknown",
+            "type": "string",
             "required": false,
             "secret": false
           },
@@ -2094,7 +2094,7 @@
           },
           {
             "name": "stream",
-            "type": "unknown",
+            "type": "boolean",
             "required": false,
             "secret": false
           },
@@ -2719,7 +2719,7 @@
           },
           {
             "name": "azure_search_vector_field",
-            "type": "unknown",
+            "type": "string",
             "required": false,
             "secret": false
           },
@@ -2731,7 +2731,7 @@
           },
           {
             "name": "is_vertex_request",
-            "type": "unknown",
+            "type": "boolean",
             "required": false,
             "secret": false
           },
@@ -2773,7 +2773,7 @@
           },
           {
             "name": "top_k",
-            "type": "unknown",
+            "type": "number",
             "required": false,
             "secret": false
           }
@@ -3173,7 +3173,7 @@
           },
           {
             "name": "is_vertex_request",
-            "type": "unknown",
+            "type": "boolean",
             "required": false,
             "secret": false
           },
@@ -4889,7 +4889,7 @@
           },
           {
             "name": "json_mode",
-            "type": "unknown",
+            "type": "boolean",
             "required": false,
             "secret": false
           },
@@ -4991,13 +4991,13 @@
           },
           {
             "name": "steps",
-            "type": "unknown",
+            "type": "number",
             "required": false,
             "secret": false
           },
           {
             "name": "stream",
-            "type": "unknown",
+            "type": "boolean",
             "required": false,
             "secret": false
           },
@@ -6356,7 +6356,7 @@
           },
           {
             "name": "name",
-            "type": "unknown",
+            "type": "string",
             "required": false,
             "secret": false
           },
@@ -6392,7 +6392,7 @@
           },
           {
             "name": "stream",
-            "type": "unknown",
+            "type": "boolean",
             "required": false,
             "secret": false
           },
@@ -6404,7 +6404,7 @@
           },
           {
             "name": "text_completion",
-            "type": "unknown",
+            "type": "boolean",
             "required": false,
             "secret": false
           },
@@ -6428,13 +6428,13 @@
           },
           {
             "name": "use_psc_endpoint_format",
-            "type": "unknown",
+            "type": "boolean",
             "required": false,
             "secret": false
           },
           {
             "name": "use_ssml",
-            "type": "unknown",
+            "type": "boolean",
             "required": false,
             "secret": false
           },
@@ -7400,7 +7400,7 @@
           },
           {
             "name": "stream",
-            "type": "unknown",
+            "type": "boolean",
             "required": false,
             "secret": false
           }
@@ -7824,7 +7824,7 @@
         "extra": [
           {
             "name": "_add_reasoning_prompt",
-            "type": "unknown",
+            "type": "boolean",
             "required": false,
             "secret": false
           }

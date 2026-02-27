@@ -94,6 +94,15 @@ function mapPythonType(typeExpression: string): CatalogFieldType {
   return 'unknown';
 }
 
+function mapDefaultValueType(defaultValue: string | undefined): CatalogFieldType {
+  if (!defaultValue) return 'unknown';
+  const trimmed = defaultValue.trim();
+  if (trimmed === 'True' || trimmed === 'False') return 'boolean';
+  if (/^["'][\s\S]*["']$/.test(trimmed)) return 'string';
+  if (/^-?\d+(\.\d+)?$/.test(trimmed)) return 'number';
+  return 'unknown';
+}
+
 function isRequiredField(typeExpression: string, hasDefaultValue: boolean): boolean {
   const normalized = typeExpression.toLowerCase();
   if (
@@ -196,9 +205,13 @@ async function extractExtraFields(
   providerRoot: string,
   baseFieldNames: Set<string>
 ): Promise<CatalogField[]> {
-  const discovered = new Set<string>();
+  const discovered = new Map<string, CatalogFieldType>();
   const pyFiles = await listPythonFilesRecursive(providerRoot);
-  const getterPattern = /(?:optional_params|litellm_params)\.get\(\s*['"](\w+)['"]\s*(?:,|\))/g;
+  const getterPattern =
+    /(?:optional_params|litellm_params)\.get\(\s*['"](\w+)['"]\s*(?:,\s*(True|False|None|"[^"]*"|'[^']*'|-?\d+(?:\.\d+)?))?\s*[,)]/g;
+  // Matches: optional_params.get("key") is True/False — infers boolean even without a default
+  const booleanUsagePattern =
+    /(?:optional_params|litellm_params)\.get\(\s*['"](\w+)['"]\s*[,)]\s*is\s+(True|False)/g;
 
   for (const filePath of pyFiles) {
     const content = await fs.readFile(filePath, 'utf8');
@@ -210,15 +223,29 @@ async function extractExtraFields(
       if (baseFieldNames.has(fieldName)) {
         continue;
       }
-      discovered.add(fieldName);
+      const inferredType = mapDefaultValueType(match[2]);
+      const existing = discovered.get(fieldName);
+      if (existing === undefined || (existing === 'unknown' && inferredType !== 'unknown')) {
+        discovered.set(fieldName, inferredType);
+      }
+    }
+    for (const match of content.matchAll(booleanUsagePattern)) {
+      const fieldName = match[1];
+      if (!fieldName || baseFieldNames.has(fieldName)) {
+        continue;
+      }
+      const existing = discovered.get(fieldName);
+      if (existing === undefined || existing === 'unknown') {
+        discovered.set(fieldName, 'boolean');
+      }
     }
   }
 
-  return Array.from(discovered)
-    .sort((a, b) => a.localeCompare(b))
-    .map((name) => ({
+  return Array.from(discovered.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([name, type]) => ({
       name,
-      type: 'unknown',
+      type,
       required: false,
       secret: SECRET_FIELD_PATTERN.test(name),
     }));

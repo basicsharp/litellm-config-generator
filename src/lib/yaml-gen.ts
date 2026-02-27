@@ -66,5 +66,8 @@ export function configToYaml(models: ModelEntry[]): string {
     };
   });
 
-  return yaml.dump({ model_list }, { noRefs: true, lineWidth: 100 });
+  return yaml.dump(
+    { model_list },
+    { noRefs: true, lineWidth: 100, styles: { '!!bool': 'camelcase' } }
+  );
 }
