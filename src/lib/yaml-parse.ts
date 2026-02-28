@@ -49,24 +49,37 @@ function generateId(index: number): string {
   return `imported-${index + 1}`;
 }
 
-export function yamlToConfig(content: string): { models: ModelEntry[]; errors: string[] } {
+function parseCatalogRefHeader(content: string): string | null {
+  const normalized = content.replace(/^\uFEFF/, '');
+  const firstLine = normalized.split(/\r?\n/, 1)[0]?.trim() ?? '';
+  const match = firstLine.match(/^#\s*litellm\s*:\s*(.+)$/i);
+  const ref = match?.[1]?.trim();
+  return ref ? ref : null;
+}
+
+export function yamlToConfig(content: string): {
+  models: ModelEntry[];
+  errors: string[];
+  catalogRef: string | null;
+} {
   const errors: string[] = [];
+  const catalogRef = parseCatalogRefHeader(content);
 
   let parsed: unknown;
   try {
     parsed = yaml.load(content);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
-    return { models: [], errors: [`Invalid YAML: ${message}`] };
+    return { models: [], errors: [`Invalid YAML: ${message}`], catalogRef };
   }
 
   if (!parsed || typeof parsed !== 'object' || !('model_list' in parsed)) {
-    return { models: [], errors: ['model_list was not found in YAML input.'] };
+    return { models: [], errors: ['model_list was not found in YAML input.'], catalogRef };
   }
 
   const modelList = (parsed as { model_list?: unknown }).model_list;
   if (!Array.isArray(modelList)) {
-    return { models: [], errors: ['model_list must be an array.'] };
+    return { models: [], errors: ['model_list must be an array.'], catalogRef };
   }
 
   const models: ModelEntry[] = [];
@@ -144,5 +157,5 @@ export function yamlToConfig(content: string): { models: ModelEntry[]; errors: s
     });
   });
 
-  return { models, errors };
+  return { models, errors, catalogRef };
 }

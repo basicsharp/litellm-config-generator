@@ -6,8 +6,8 @@ import { describe, expect, it, vi } from 'vitest';
 import type { ModelEntry } from '@/lib/schemas';
 import { ModelForm } from '@/components/model-form';
 
-vi.mock('@/lib/catalog', () => ({
-  getFieldsForProvider: (providerId: string) => {
+vi.mock('@/lib/catalog-context', () => ({
+  useFieldsForProvider: (providerId: string) => {
     if (providerId === 'anthropic') {
       return {
         base: [

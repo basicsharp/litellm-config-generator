@@ -5,6 +5,21 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { ProviderSelect } from '@/components/provider-select';
 
+vi.mock('@/lib/catalog-context', () => ({
+  useProviders: vi.fn(() => [
+    { id: 'openai', label: 'OpenAI' },
+    { id: 'azure', label: 'Azure OpenAI' },
+    { id: 'anthropic', label: 'Anthropic' },
+    { id: 'bedrock', label: 'AWS Bedrock' },
+    { id: 'vertex_ai', label: 'Vertex AI' },
+    { id: 'gemini', label: 'Gemini' },
+    { id: 'groq', label: 'Groq' },
+    { id: 'mistral', label: 'Mistral' },
+    { id: 'ollama', label: 'Ollama' },
+    { id: 'hosted_vllm', label: 'Hosted vLLM' },
+  ]),
+}));
+
 describe('ProviderSelect', () => {
   it('opens on click with focused search input', async () => {
     const user = userEvent.setup();

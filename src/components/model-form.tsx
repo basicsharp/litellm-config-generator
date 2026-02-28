@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { getFieldsForProvider } from '@/lib/catalog';
+import { useFieldsForProvider } from '@/lib/catalog-context';
 import { modelEntryResolver } from '@/lib/form-utils';
 import type { EnvVarValue, ModelEntry } from '@/lib/schemas';
 import { Separator } from './ui/separator';
@@ -70,7 +70,7 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
   }, [entry, form]);
 
   const providerId = form.watch('provider');
-  const fields = getFieldsForProvider(providerId);
+  const fields = useFieldsForProvider(providerId);
 
   const optionalFields = React.useMemo(() => {
     const merged = [...fields.base, ...fields.extra].filter(

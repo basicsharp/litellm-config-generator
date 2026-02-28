@@ -2,6 +2,10 @@ import yaml from 'js-yaml';
 
 import type { EnvVarValue, LiteLLMParams, ModelEntry } from '@/lib/schemas';
 
+type ConfigToYamlOptions = {
+  catalogRef?: string;
+};
+
 type YamlPrimitive = string | number | boolean;
 
 function isEnvVarValue(value: unknown): value is EnvVarValue {
@@ -40,7 +44,7 @@ function buildModelValue(provider: string, model: string): string {
   return `${provider}/${model}`;
 }
 
-export function configToYaml(models: ModelEntry[]): string {
+export function configToYaml(models: ModelEntry[], options?: ConfigToYamlOptions): string {
   const model_list = models.map((entry) => {
     const litellm_params: Record<string, YamlPrimitive> = {
       model: buildModelValue(entry.provider, entry.model),
@@ -66,8 +70,15 @@ export function configToYaml(models: ModelEntry[]): string {
     };
   });
 
-  return yaml.dump(
+  const body = yaml.dump(
     { model_list },
     { noRefs: true, lineWidth: 100, styles: { '!!bool': 'camelcase' } }
   );
+
+  const catalogRef = options?.catalogRef?.trim();
+  if (!catalogRef) {
+    return body;
+  }
+
+  return `# litellm:${catalogRef}\n${body}`;
 }

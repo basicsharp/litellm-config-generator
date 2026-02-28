@@ -1,29 +1,71 @@
 import { describe, expect, it } from 'vitest';
 
-import { getFieldsForProvider, getModelsForProvider, getProviders } from '@/lib/catalog';
+import {
+  getFieldsForProvider,
+  getModelsForProvider,
+  getProviders,
+  type CatalogData,
+} from '@/lib/catalog';
 import { defaultModelEntry } from '@/lib/form-utils';
 import { configToYaml } from '@/lib/yaml-gen';
 import { yamlToConfig } from '@/lib/yaml-parse';
 
+const catalogFixture: CatalogData = {
+  meta: {
+    generatedAt: '2026-01-01T00:00:00.000Z',
+    litellmSubmodulePath: 'litellm',
+    litellmRef: 'v1.0.0',
+    litellmCommit: 'abcdef1',
+  },
+  providers: {
+    openai: {
+      label: 'OpenAI',
+      models: [
+        {
+          id: 'gpt-4o-mini',
+          mode: 'chat',
+          maxTokens: 128000,
+          inputCostPerToken: 0.000001,
+          outputCostPerToken: 0.000002,
+        },
+      ],
+      fields: {
+        base: [
+          {
+            name: 'api_key',
+            type: 'string',
+            required: true,
+            secret: true,
+          },
+        ],
+        extra: [],
+      },
+    },
+  },
+};
+
 describe('additional lib coverage', () => {
   it('returns provider catalog data', () => {
-    const providers = getProviders();
+    const providers = getProviders(catalogFixture);
     expect(providers.length).toBeGreaterThan(0);
 
     const firstProvider = providers[0];
     expect(firstProvider).toBeDefined();
 
-    const models = getModelsForProvider(firstProvider.id);
+    const models = getModelsForProvider(catalogFixture, firstProvider.id);
     expect(Array.isArray(models)).toBe(true);
 
-    const fields = getFieldsForProvider(firstProvider.id);
+    const fields = getFieldsForProvider(catalogFixture, firstProvider.id);
     expect(fields).toHaveProperty('base');
     expect(fields).toHaveProperty('extra');
   });
 
   it('handles unknown provider safely', () => {
-    expect(getModelsForProvider('missing-provider')).toEqual([]);
-    expect(getFieldsForProvider('missing-provider')).toEqual({ base: [], extra: [] });
+    expect(getModelsForProvider(catalogFixture, 'missing-provider')).toEqual([]);
+    expect(getFieldsForProvider(catalogFixture, 'missing-provider')).toEqual({
+      base: [],
+      extra: [],
+    });
   });
 
   it('creates default entry shape', () => {

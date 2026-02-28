@@ -3,6 +3,7 @@ import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { codeToHtml } from 'shiki';
+import { toast } from 'sonner';
 
 import type { ModelEntry } from '@/lib/schemas';
 import { EnvVarInput } from '@/components/env-var-input';
@@ -16,10 +17,16 @@ vi.mock('shiki', () => ({
   codeToHtml: vi.fn(async (yaml: string) => `<pre>${yaml}</pre>`),
 }));
 
+vi.mock('sonner', () => ({
+  toast: {
+    success: vi.fn(),
+  },
+}));
+
 vi.mock('@/lib/yaml-parse', () => ({
   yamlToConfig: vi.fn((content: string) => {
     if (content.includes('bad')) {
-      return { models: [], errors: ['bad yaml'] };
+      return { models: [], errors: ['bad yaml'], catalogRef: null };
     }
 
     return {
@@ -33,6 +40,7 @@ vi.mock('@/lib/yaml-parse', () => ({
         },
       ],
       errors: [],
+      catalogRef: null,
     };
   }),
 }));
@@ -80,7 +88,15 @@ describe('app component smoke', () => {
     const onImport = vi.fn();
     const onDownload = vi.fn();
 
-    render(<Toolbar onImport={onImport} onDownload={onDownload} />);
+    render(
+      <Toolbar
+        onImport={onImport}
+        onDownload={onDownload}
+        versions={[]}
+        selectedVersion={null}
+        onVersionChange={vi.fn()}
+      />
+    );
 
     await user.click(screen.getByRole('button', { name: 'Import YAML' }));
     await user.click(screen.getByRole('button', { name: 'Download' }));
@@ -215,6 +231,9 @@ describe('app component smoke', () => {
 
     await user.click(screen.getByRole('button', { name: 'Copy' }));
     expect(writeTextSpy).toHaveBeenCalledTimes(1);
+    expect(toast.success).toHaveBeenCalledWith('Copied YAML to clipboard', {
+      duration: 3000,
+    });
 
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 1300));
@@ -322,6 +341,9 @@ describe('app component smoke', () => {
 
     expect(writeTextSpy).toHaveBeenCalledTimes(1);
     expect(String(writeTextSpy.mock.calls[0]?.[0] ?? '')).toContain('fresh-copy-model');
+    expect(toast.success).toHaveBeenCalledWith('Copied YAML to clipboard', {
+      duration: 3000,
+    });
 
     vi.useRealTimers();
   });
@@ -342,14 +364,14 @@ describe('app component smoke', () => {
     rerender(<YamlPreview models={[staleTarget]} />);
 
     const preview = screen.getByTestId('yaml-highlighted-preview');
-    expect(preview.className).toContain('opacity-60');
+    expect(preview.className).toContain('opacity-90');
 
     await act(async () => {
       vi.advanceTimersByTime(250);
       await waitForMicrotasks();
     });
 
-    expect(screen.getByTestId('yaml-highlighted-preview').className).not.toContain('opacity-60');
+    expect(screen.getByTestId('yaml-highlighted-preview').className).not.toContain('opacity-90');
 
     vi.useRealTimers();
   });

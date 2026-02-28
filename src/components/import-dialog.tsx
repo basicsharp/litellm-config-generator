@@ -21,7 +21,7 @@ type ImportDialogProps = {
   open: boolean;
   existingModelCount: number;
   onOpenChange: (open: boolean) => void;
-  onImport: (models: ModelEntry[]) => void;
+  onImport: (models: ModelEntry[], catalogRef: string | null) => void;
 };
 
 export function ImportDialog({
@@ -33,6 +33,7 @@ export function ImportDialog({
   const [content, setContent] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
   const [pendingModels, setPendingModels] = useState<ModelEntry[] | null>(null);
+  const [pendingCatalogRef, setPendingCatalogRef] = useState<string | null>(null);
 
   const handleImport = () => {
     const parsed = yamlToConfig(content);
@@ -43,12 +44,14 @@ export function ImportDialog({
 
     if (existingModelCount > 0) {
       setPendingModels(parsed.models);
+      setPendingCatalogRef(parsed.catalogRef);
       return;
     }
 
-    onImport(parsed.models);
+    onImport(parsed.models, parsed.catalogRef);
     setErrors([]);
     setPendingModels(null);
+    setPendingCatalogRef(null);
     onOpenChange(false);
   };
 
@@ -77,8 +80,9 @@ export function ImportDialog({
                 type="button"
                 size="sm"
                 onClick={() => {
-                  onImport(pendingModels);
+                  onImport(pendingModels, pendingCatalogRef);
                   setPendingModels(null);
+                  setPendingCatalogRef(null);
                   setErrors([]);
                   onOpenChange(false);
                 }}
@@ -89,7 +93,10 @@ export function ImportDialog({
                 type="button"
                 size="sm"
                 variant="outline"
-                onClick={() => setPendingModels(null)}
+                onClick={() => {
+                  setPendingModels(null);
+                  setPendingCatalogRef(null);
+                }}
               >
                 Cancel
               </Button>

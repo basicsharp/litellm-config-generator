@@ -1,8 +1,7 @@
 'use client';
 
+import React, { useState } from 'react';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import React, { useMemo, useState } from 'react';
-
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -13,49 +12,39 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useProviders } from '@/lib/catalog-context';
 import { cn } from '@/lib/utils';
+import type { VersionEntry } from '@/lib/catalog-context';
 
-type ProviderSelectProps = {
-  value: string;
-  onChange: (providerId: string) => void;
+type VersionSelectProps = {
+  versions: VersionEntry[];
+  selectedVersion: string | null;
+  onVersionChange: (folderName: string) => void;
 };
 
-export function ProviderSelect({ value, onChange }: ProviderSelectProps) {
-  const providers = useProviders();
+export function VersionSelect({ versions, selectedVersion, onVersionChange }: VersionSelectProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
 
+  if (versions.length === 0) {
+    return null;
+  }
+
   const selectedLabel =
-    providers.find((provider) => provider.id === value)?.label ?? 'Select provider';
+    versions.find((version) => version.folderName === selectedVersion)?.ref ?? 'Select version';
 
-  const filteredProviders = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-
-    if (!normalizedQuery) {
-      return providers;
-    }
-
-    return providers.filter((provider) => provider.label.toLowerCase().includes(normalizedQuery));
-  }, [providers, query]);
+  const normalizedQuery = query.trim().toLowerCase();
+  const filtered = normalizedQuery
+    ? versions.filter((version) => version.ref.toLowerCase().includes(normalizedQuery))
+    : versions;
 
   return (
-    <Popover
-      open={open}
-      onOpenChange={(nextOpen) => {
-        setOpen(nextOpen);
-        if (!nextOpen) {
-          setQuery('');
-        }
-      }}
-    >
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
-          aria-label="Provider"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="w-full sm:w-56 justify-between"
         >
           <span className="truncate">{selectedLabel}</span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -64,32 +53,30 @@ export function ProviderSelect({ value, onChange }: ProviderSelectProps) {
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
         <Command shouldFilter={false}>
           <CommandInput
-            placeholder="Search provider..."
+            placeholder="Search version..."
             value={query}
             onValueChange={(next) => setQuery(next)}
-            autoFocus
           />
           <CommandList>
-            <CommandEmpty>No providers found.</CommandEmpty>
+            <CommandEmpty>No versions found.</CommandEmpty>
             <CommandGroup>
-              {filteredProviders.map((provider) => (
+              {filtered.map((version) => (
                 <CommandItem
-                  key={provider.id}
-                  value={provider.label}
+                  key={version.folderName}
+                  value={version.ref}
                   onSelect={() => {
-                    onChange(provider.id);
+                    onVersionChange(version.folderName);
                     setOpen(false);
-                    setQuery('');
                   }}
                 >
                   <Check
-                    data-testid="provider-checkmark"
+                    data-testid="version-checkmark"
                     className={cn(
                       'mr-2 h-4 w-4',
-                      value === provider.id ? 'opacity-100' : 'opacity-0'
+                      selectedVersion === version.folderName ? 'opacity-100' : 'opacity-0'
                     )}
                   />
-                  <span className="truncate">{provider.label}</span>
+                  <span className="truncate">{version.ref}</span>
                 </CommandItem>
               ))}
             </CommandGroup>

@@ -1,7 +1,12 @@
+import { execFile } from 'node:child_process';
 import { promises as fs } from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseArgs, promisify } from 'node:util';
 import { normalizeProviderId } from '../src/lib/normalize-provider';
+
+const execFileAsync = promisify(execFile);
 
 type CatalogFieldType = 'string' | 'number' | 'boolean' | 'unknown';
 
@@ -33,6 +38,8 @@ type CatalogOutput = {
   meta: {
     generatedAt: string;
     litellmSubmodulePath: string;
+    litellmRef: string;
+    litellmCommit: string;
   };
   providers: Record<string, CatalogProvider>;
 };
@@ -44,6 +51,18 @@ type ModelPriceRecord = {
   max_input_tokens?: number;
   input_cost_per_token?: number;
   output_cost_per_token?: number;
+};
+
+export type VersionEntry = {
+  ref: string;
+  folderName: string;
+  commit: string;
+  generatedAt: string;
+};
+
+type CatalogIndex = {
+  versions: VersionEntry[];
+  latest: string;
 };
 
 const TARGET_PROVIDERS = [
@@ -75,6 +94,117 @@ const PROVIDER_LABELS: Record<string, string> = {
 };
 
 const SECRET_FIELD_PATTERN = /(key|secret|token|password|credential)/i;
+
+type CliOptions = {
+  ref?: string;
+};
+
+export function parseCliArgs(argv = process.argv.slice(2)): CliOptions {
+  const parsed = parseArgs({
+    args: argv,
+    options: {
+      ref: {
+        type: 'string',
+      },
+    },
+    strict: true,
+    allowPositionals: false,
+  });
+
+  const ref = parsed.values.ref?.trim();
+  if (!ref) {
+    return {};
+  }
+
+  return { ref };
+}
+
+export function sanitizeRef(ref: string): string {
+  return ref.replaceAll('/', '__').replace(/[^a-zA-Z0-9._-]/g, '_');
+}
+
+async function runGit(repoPath: string, args: string[]): Promise<string> {
+  const { stdout } = await execFileAsync('git', ['-C', repoPath, ...args]);
+  return stdout.trim();
+}
+
+export async function resolveCommitSha(repoPath: string): Promise<string> {
+  const sha = await runGit(repoPath, ['rev-parse', '--short', 'HEAD']);
+  if (!sha) {
+    throw new Error(`Unable to resolve commit SHA for ${repoPath}`);
+  }
+  return sha;
+}
+
+export async function addWorktree(
+  submodulePath: string,
+  worktreePath: string,
+  ref: string
+): Promise<void> {
+  try {
+    await runGit(submodulePath, ['worktree', 'add', '--detach', worktreePath, ref]);
+  } catch {
+    try {
+      await runGit(submodulePath, ['fetch', 'origin', ref]);
+      await runGit(submodulePath, ['worktree', 'add', '--detach', worktreePath, ref]);
+    } catch {
+      throw new Error(
+        `Unable to resolve ref "${ref}" locally or from origin. Check ref spelling and network access.`
+      );
+    }
+  }
+}
+
+export async function removeWorktree(submodulePath: string, worktreePath: string): Promise<void> {
+  try {
+    await runGit(submodulePath, ['worktree', 'remove', '--force', worktreePath]);
+  } catch {
+    return;
+  }
+}
+
+async function readCatalogIndex(indexPath: string): Promise<CatalogIndex | null> {
+  try {
+    const raw = await fs.readFile(indexPath, 'utf8');
+    return JSON.parse(raw) as CatalogIndex;
+  } catch {
+    return null;
+  }
+}
+
+export async function updateIndexJson(outputDir: string, entry: VersionEntry): Promise<void> {
+  const indexPath = path.join(outputDir, 'index.json');
+  const existing = (await readCatalogIndex(indexPath)) ?? {
+    versions: [],
+    latest: entry.folderName,
+  };
+
+  const existingVersions = await Promise.all(
+    existing.versions.map(async (versionEntry) => {
+      const catalogPath = path.join(outputDir, versionEntry.folderName, 'catalog.json');
+      try {
+        await fs.access(catalogPath);
+        return versionEntry;
+      } catch {
+        return null;
+      }
+    })
+  );
+
+  const deduped = existingVersions.filter(
+    (version): version is VersionEntry =>
+      version !== null && version.folderName !== entry.folderName
+  );
+  deduped.push(entry);
+
+  const nextIndex: CatalogIndex = {
+    versions: deduped,
+    latest: entry.folderName,
+  };
+
+  await fs.mkdir(outputDir, { recursive: true });
+  await fs.writeFile(indexPath, JSON.stringify(nextIndex, null, 2) + '\n', 'utf8');
+}
 
 function mapPythonType(typeExpression: string): CatalogFieldType {
   const normalized = typeExpression.toLowerCase();
@@ -209,7 +339,6 @@ async function extractExtraFields(
   const pyFiles = await listPythonFilesRecursive(providerRoot);
   const getterPattern =
     /(?:optional_params|litellm_params)\.get\(\s*['"](\w+)['"]\s*(?:,\s*(True|False|None|"[^"]*"|'[^']*'|-?\d+(?:\.\d+)?))?\s*[,)]/g;
-  // Matches: optional_params.get("key") is True/False — infers boolean even without a default
   const booleanUsagePattern =
     /(?:optional_params|litellm_params)\.get\(\s*['"](\w+)['"]\s*[,)]\s*is\s+(True|False)/g;
 
@@ -288,69 +417,106 @@ function extractModelsByProvider(
   return grouped;
 }
 
-async function main(): Promise<void> {
+export async function main(): Promise<void> {
+  const { ref } = parseCliArgs();
   const repoRoot = process.cwd();
   const litellmSubmodulePath = path.join(repoRoot, 'litellm');
-  const modelPricesPath = path.join(litellmSubmodulePath, 'model_prices_and_context_window.json');
-  const routerTypesPath = path.join(litellmSubmodulePath, 'litellm', 'types', 'router.py');
-  const llmsRoot = path.join(litellmSubmodulePath, 'litellm', 'llms');
-  const outputPath = path.join(repoRoot, 'public', 'catalog.json');
+  const outputRoot = path.join(repoRoot, 'public', 'catalogs');
+
+  let sourceRoot = litellmSubmodulePath;
+  let worktreePath: string | null = null;
+
+  if (ref) {
+    const folderName = sanitizeRef(ref);
+    worktreePath = path.join(
+      os.tmpdir(),
+      `litellm-worktree-${folderName}-${process.pid}-${Date.now()}`
+    );
+    await addWorktree(litellmSubmodulePath, worktreePath, ref);
+    sourceRoot = worktreePath;
+  }
 
   try {
-    await fs.access(modelPricesPath);
-    await fs.access(routerTypesPath);
-  } catch {
-    throw new Error(
-      'LiteLLM submodule files are missing. Ensure submodule is initialized and contains model_prices_and_context_window.json and types/router.py.'
-    );
-  }
+    const modelPricesPath = path.join(sourceRoot, 'model_prices_and_context_window.json');
+    const routerTypesPath = path.join(sourceRoot, 'litellm', 'types', 'router.py');
+    const llmsRoot = path.join(sourceRoot, 'litellm', 'llms');
 
-  const modelData = await readJsonFile<Record<string, ModelPriceRecord>>(modelPricesPath);
-  const routerPy = await fs.readFile(routerTypesPath, 'utf8');
-
-  const baseFields = extractBaseFields(routerPy);
-  const baseFieldNames = new Set(baseFields.map((field) => field.name));
-  const modelsByProvider = extractModelsByProvider(modelData);
-
-  const providers: Record<string, CatalogProvider> = {};
-  for (const providerId of TARGET_PROVIDERS) {
-    const models = modelsByProvider[providerId] ?? [];
-    if (models.length === 0) {
-      continue;
-    }
-
-    const providerDir = path.join(llmsRoot, providerId);
-    let extraFields: CatalogField[] = [];
     try {
-      await fs.access(providerDir);
-      extraFields = await extractExtraFields(providerDir, baseFieldNames);
+      await fs.access(modelPricesPath);
+      await fs.access(routerTypesPath);
     } catch {
-      extraFields = [];
+      throw new Error(
+        'LiteLLM submodule files are missing. Ensure submodule is initialized and contains model_prices_and_context_window.json and types/router.py.'
+      );
     }
 
-    providers[providerId] = {
-      label: buildProviderLabel(providerId),
-      models,
-      fields: {
-        base: baseFields,
-        extra: extraFields,
+    const modelData = await readJsonFile<Record<string, ModelPriceRecord>>(modelPricesPath);
+    const routerPy = await fs.readFile(routerTypesPath, 'utf8');
+    const resolvedCommit = await resolveCommitSha(sourceRoot);
+    const resolvedRef = ref ?? resolvedCommit;
+    const folderName = ref ? sanitizeRef(ref) : resolvedCommit;
+    const outputPath = path.join(outputRoot, folderName, 'catalog.json');
+
+    const baseFields = extractBaseFields(routerPy);
+    const baseFieldNames = new Set(baseFields.map((field) => field.name));
+    const modelsByProvider = extractModelsByProvider(modelData);
+
+    const providers: Record<string, CatalogProvider> = {};
+    for (const providerId of TARGET_PROVIDERS) {
+      const models = modelsByProvider[providerId] ?? [];
+      if (models.length === 0) {
+        continue;
+      }
+
+      const providerDir = path.join(llmsRoot, providerId);
+      let extraFields: CatalogField[] = [];
+      try {
+        await fs.access(providerDir);
+        extraFields = await extractExtraFields(providerDir, baseFieldNames);
+      } catch {
+        extraFields = [];
+      }
+
+      providers[providerId] = {
+        label: buildProviderLabel(providerId),
+        models,
+        fields: {
+          base: baseFields,
+          extra: extraFields,
+        },
+      };
+    }
+
+    const generatedAt = new Date().toISOString();
+    const output: CatalogOutput = {
+      meta: {
+        generatedAt,
+        litellmSubmodulePath: 'litellm',
+        litellmRef: resolvedRef,
+        litellmCommit: resolvedCommit,
       },
+      providers,
     };
+
+    await fs.mkdir(path.dirname(outputPath), { recursive: true });
+    await fs.writeFile(outputPath, JSON.stringify(output, null, 2) + '\n', 'utf8');
+
+    await updateIndexJson(outputRoot, {
+      ref: resolvedRef,
+      folderName,
+      commit: resolvedCommit,
+      generatedAt,
+    });
+
+    const providerCount = Object.keys(providers).length;
+    console.log(
+      `Catalog generated at public/catalogs/${folderName}/catalog.json with ${providerCount} providers.`
+    );
+  } finally {
+    if (worktreePath) {
+      await removeWorktree(litellmSubmodulePath, worktreePath);
+    }
   }
-
-  const output: CatalogOutput = {
-    meta: {
-      generatedAt: new Date().toISOString(),
-      litellmSubmodulePath: 'litellm',
-    },
-    providers,
-  };
-
-  await fs.mkdir(path.dirname(outputPath), { recursive: true });
-  await fs.writeFile(outputPath, JSON.stringify(output, null, 2) + '\n', 'utf8');
-
-  const providerCount = Object.keys(providers).length;
-  console.log(`Catalog generated at public/catalog.json with ${providerCount} providers.`);
 }
 
 const isDirectRun =

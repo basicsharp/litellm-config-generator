@@ -79,6 +79,12 @@ Run this whenever `litellm` source files change.
 npm run generate:catalog
 ```
 
+Optional: generate a specific litellm ref (tag, branch, or commit):
+
+```bash
+npm run generate:catalog -- --ref v1.81.13
+```
+
 Reads from:
 
 - `litellm/model_prices_and_context_window.json`
@@ -87,7 +93,8 @@ Reads from:
 
 Writes to:
 
-- `public/catalog.json`
+- `public/catalogs/<version>/catalog.json`
+- `public/catalogs/index.json`
 
 Note: the generator targets the top providers configured in `scripts/generate-catalog.ts` and only includes providers with chat/completion-capable models in output.
 
@@ -99,7 +106,7 @@ Note: the generator targets the top providers configured in `scripts/generate-ca
 - `npm run lint` - run ESLint checks
 - `npm run test` - run Vitest
 - `npm run test:coverage` - run Vitest with coverage report
-- `npm run generate:catalog` - regenerate `public/catalog.json`
+- `npm run generate:catalog` - regenerate versioned catalogs under `public/catalogs/`
 
 ## Project Map
 
@@ -108,7 +115,7 @@ Note: the generator targets the top providers configured in `scripts/generate-ca
 - `src/lib/schemas.ts` - Zod schemas and inferred types
 - `src/lib/yaml-gen.ts` - state -> YAML serialization
 - `src/lib/yaml-parse.ts` - YAML -> state parsing
-- `src/lib/catalog.ts` - typed accessors for `public/catalog.json`
+- `src/lib/catalog.ts` - typed accessors for runtime-loaded catalog data
 - `scripts/generate-catalog.ts` - catalog generation script (repo root, not in `src/`)
 
 ## Troubleshooting

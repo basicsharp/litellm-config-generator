@@ -1,5 +1,3 @@
-import catalogData from '../../public/catalog.json';
-
 export type CatalogField = {
   name: string;
   type: 'string' | 'number' | 'boolean' | 'unknown';
@@ -20,7 +18,13 @@ export type CatalogProvider = {
   label: string;
 };
 
-type CatalogJson = {
+export type CatalogData = {
+  meta: {
+    generatedAt: string;
+    litellmSubmodulePath: string;
+    litellmRef: string;
+    litellmCommit: string;
+  };
   providers: Record<
     string,
     {
@@ -34,19 +38,20 @@ type CatalogJson = {
   >;
 };
 
-const catalog = catalogData as CatalogJson;
-
-export function getProviders(): CatalogProvider[] {
+export function getProviders(catalog: CatalogData): CatalogProvider[] {
   return Object.entries(catalog.providers)
     .map(([id, value]) => ({ id, label: value.label }))
     .sort((a, b) => a.label.localeCompare(b.label));
 }
 
-export function getModelsForProvider(providerId: string): CatalogModel[] {
+export function getModelsForProvider(catalog: CatalogData, providerId: string): CatalogModel[] {
   return catalog.providers[providerId]?.models ?? [];
 }
 
-export function getFieldsForProvider(providerId: string): {
+export function getFieldsForProvider(
+  catalog: CatalogData,
+  providerId: string
+): {
   base: CatalogField[];
   extra: CatalogField[];
 } {

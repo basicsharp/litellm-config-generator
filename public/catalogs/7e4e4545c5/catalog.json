@@ -1,7 +1,9 @@
 {
   "meta": {
-    "generatedAt": "2026-02-27T17:24:21.250Z",
-    "litellmSubmodulePath": "litellm"
+    "generatedAt": "2026-02-28T01:11:36.467Z",
+    "litellmSubmodulePath": "litellm",
+    "litellmRef": "7e4e4545c5",
+    "litellmCommit": "7e4e4545c5"
   },
   "providers": {
     "openai": {

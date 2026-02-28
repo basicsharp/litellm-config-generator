@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -14,7 +14,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { getModelsForProvider } from '@/lib/catalog';
+import { useModelsForProvider } from '@/lib/catalog-context';
 import { cn } from '@/lib/utils';
 
 type ModelSelectProps = {
@@ -26,7 +26,7 @@ type ModelSelectProps = {
 export function ModelSelect({ providerId, value, onChange }: ModelSelectProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const models = useMemo(() => getModelsForProvider(providerId), [providerId]);
+  const models = useModelsForProvider(providerId);
   const selectedLabel = value || 'Select model';
   const allowCustom = query.trim().length > 0 && !models.some((model) => model.id === query.trim());
 

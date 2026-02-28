@@ -1,0 +1,17 @@
+{
+  "versions": [
+    {
+      "ref": "7e4e4545c5",
+      "folderName": "7e4e4545c5",
+      "commit": "7e4e4545c5",
+      "generatedAt": "2026-02-28T01:11:36.467Z"
+    },
+    {
+      "ref": "v1.81.14.rc.2",
+      "folderName": "v1.81.14.rc.2",
+      "commit": "0435375b12",
+      "generatedAt": "2026-02-28T05:04:13.727Z"
+    }
+  ],
+  "latest": "v1.81.14.rc.2"
+}

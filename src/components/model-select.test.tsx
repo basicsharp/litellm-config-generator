@@ -5,8 +5,8 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { ModelSelect } from '@/components/model-select';
 
-vi.mock('@/lib/catalog', () => ({
-  getModelsForProvider: vi.fn(() => [
+vi.mock('@/lib/catalog-context', () => ({
+  useModelsForProvider: vi.fn(() => [
     { id: 'gpt-4o-mini', mode: null },
     { id: 'gpt-4.1', mode: 'chat' },
   ]),

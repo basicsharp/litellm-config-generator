@@ -3,6 +3,7 @@
 import React from 'react';
 import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { codeToHtml } from 'shiki';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { configToYaml } from '@/lib/yaml-gen';
@@ -11,17 +12,21 @@ import { Card } from './ui/card';
 
 type YamlPreviewProps = {
   models: ModelEntry[];
+  catalogRef?: string;
 };
 
 export const HIGHLIGHT_DEBOUNCE_MS = 250;
 
-export function YamlPreview({ models }: YamlPreviewProps) {
+export function YamlPreview({ models, catalogRef }: YamlPreviewProps) {
   const [highlighted, setHighlighted] = useState('');
   const [highlightedFor, setHighlightedFor] = useState('');
   const [copied, setCopied] = useState(false);
   const deferredModels = useDeferredValue(models);
-  const latestYamlText = useMemo(() => configToYaml(models), [models]);
-  const highlightedYamlText = useMemo(() => configToYaml(deferredModels), [deferredModels]);
+  const latestYamlText = useMemo(() => configToYaml(models, { catalogRef }), [catalogRef, models]);
+  const highlightedYamlText = useMemo(
+    () => configToYaml(deferredModels, { catalogRef }),
+    [catalogRef, deferredModels]
+  );
   const isStale = highlightedFor !== highlightedYamlText;
 
   useEffect(() => {
@@ -53,6 +58,7 @@ export function YamlPreview({ models }: YamlPreviewProps) {
           onClick={async () => {
             await navigator.clipboard.writeText(latestYamlText);
             setCopied(true);
+            toast.success('Copied YAML to clipboard', { duration: 3000 });
             setTimeout(() => setCopied(false), 1200);
           }}
         >
