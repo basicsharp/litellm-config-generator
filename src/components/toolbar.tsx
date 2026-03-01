@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Download, Upload } from 'lucide-react';
+import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
 import type { VersionEntry } from '@/lib/catalog-context';
@@ -25,7 +26,16 @@ export function Toolbar({
 }: ToolbarProps) {
   return (
     <Card className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-card p-4">
-      <h1 className="text-lg font-semibold">LiteLLM Config Generator</h1>
+      <div className="flex items-center gap-2">
+        <Image
+          src="/icon.png?v=gear"
+          alt="LiteLLM logo"
+          className="h-6 w-6 rounded-sm"
+          width={24}
+          height={24}
+        />
+        <h1 className="text-lg font-semibold">LiteLLM Config Generator</h1>
+      </div>
       {versions.length > 0 ? (
         <VersionSelect
           versions={versions}

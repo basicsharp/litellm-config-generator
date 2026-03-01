@@ -20,6 +20,7 @@ describe('Toolbar', () => {
       />
     );
 
+    expect(screen.getByRole('img', { name: 'LiteLLM logo' })).not.toBeNull();
     expect(screen.getByRole('combobox')).not.toBeNull();
   });
 
