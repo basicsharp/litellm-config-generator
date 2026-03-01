@@ -192,19 +192,39 @@ describe('ModelForm provider change behavior', () => {
 
     render(<ModelForm entry={makeEntry()} onSave={onSave} />);
 
-    expect(screen.getByText('guardrails (Enterprise)')).not.toBeNull();
+    await user.click(screen.getByRole('combobox', { name: /add option/i }));
+    await user.click(screen.getByText('guardrails'));
 
     await user.type(screen.getByLabelText('Add guardrail name'), 'azure-text-moderation');
     await user.click(screen.getByRole('button', { name: 'Add' }));
 
     expect(onSave).toHaveBeenCalled();
     const latest = onSave.mock.calls.at(-1)?.[0];
-    expect(latest?.guardrails).toEqual(['azure-text-moderation']);
+    expect(latest?.litellm_params.guardrails).toEqual(['azure-text-moderation']);
 
     await user.click(
       screen.getByRole('button', { name: 'Remove model guardrail azure-text-moderation' })
     );
     const afterRemove = onSave.mock.calls.at(-1)?.[0];
-    expect(afterRemove?.guardrails).toEqual([]);
+    expect(afterRemove?.litellm_params.guardrails).toEqual([]);
+  });
+
+  it('shows Enterprise badge for enterprise optional params', async () => {
+    const user = userEvent.setup();
+
+    render(<ModelForm entry={makeEntry()} onSave={vi.fn()} />);
+
+    await user.click(screen.getByRole('combobox', { name: /add option/i }));
+    expect(screen.getByText('budget_id')).not.toBeNull();
+
+    const badgesInList = screen
+      .getAllByText('Ent.')
+      .filter((element) => element.closest('[cmdk-item]') !== null);
+    expect(badgesInList.length).toBeGreaterThan(0);
+
+    await user.click(screen.getByText('budget_id'));
+
+    const fieldRow = screen.getByText('budget_id').closest('div');
+    expect(fieldRow?.textContent?.includes('Ent.')).toBe(true);
   });
 });

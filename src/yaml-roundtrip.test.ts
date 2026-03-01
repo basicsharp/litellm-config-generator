@@ -189,8 +189,7 @@ guardrails:
         model_name: 'claude-sonnet-4',
         provider: 'anthropic',
         model: 'anthropic/claude-sonnet-4-20250514',
-        litellm_params: {},
-        guardrails: ['azure-text-moderation'],
+        litellm_params: { guardrails: ['azure-text-moderation'] },
       },
     ];
 
@@ -200,6 +199,6 @@ guardrails:
 
     const parsed = yamlToConfig(yaml);
     expect(parsed.errors).toEqual([]);
-    expect(parsed.models[0]?.guardrails).toEqual(['azure-text-moderation']);
+    expect(parsed.models[0]?.litellm_params.guardrails).toEqual(['azure-text-moderation']);
   });
 });

@@ -33,6 +33,7 @@ import { useFieldsForProvider } from '@/lib/catalog-context';
 import { modelEntryResolver } from '@/lib/form-utils';
 import type { EnvVarValue, ModelEntry } from '@/lib/schemas';
 import { Separator } from './ui/separator';
+import type { CatalogField } from '@/lib/catalog';
 
 type ModelFormProps = {
   entry: ModelEntry;
@@ -47,6 +48,30 @@ const EXCLUDED_DYNAMIC_FIELDS = new Set([
   'stream_timeout',
   'max_retries',
 ]);
+
+const ENTERPRISE_PARAM_NAMES = new Set([
+  'guardrails',
+  'budget_id',
+  'temp_budget_increase',
+  'temp_budget_expiry',
+  'callback_name',
+  'callback_type',
+  'callback_vars',
+]);
+
+const ENTERPRISE_OPTIONAL_FIELDS: CatalogField[] = [
+  { name: 'guardrails', type: 'unknown', required: false, secret: false },
+  { name: 'budget_id', type: 'string', required: false, secret: false },
+  { name: 'temp_budget_increase', type: 'number', required: false, secret: false },
+  { name: 'temp_budget_expiry', type: 'string', required: false, secret: false },
+  { name: 'callback_name', type: 'string', required: false, secret: false },
+  { name: 'callback_type', type: 'string', required: false, secret: false },
+  { name: 'callback_vars', type: 'string', required: false, secret: false },
+];
+
+function isEnterpriseParam(name: string): boolean {
+  return ENTERPRISE_PARAM_NAMES.has(name);
+}
 
 function asEnvValue(value: unknown): EnvVarValue {
   if (value && typeof value === 'object' && 'mode' in value) {
@@ -74,11 +99,11 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
   const fields = useFieldsForProvider(providerId);
 
   const optionalFields = React.useMemo(() => {
-    const merged = [...fields.base, ...fields.extra].filter(
+    const merged = [...fields.base, ...fields.extra, ...ENTERPRISE_OPTIONAL_FIELDS].filter(
       (field) => !EXCLUDED_DYNAMIC_FIELDS.has(field.name)
     );
     const deduped = new Map(merged.map((field) => [field.name, field]));
-    return Array.from(deduped.values());
+    return Array.from(deduped.values()).sort((a, b) => a.name.localeCompare(b.name));
   }, [fields.base, fields.extra]);
 
   const [addOptionOpen, setAddOptionOpen] = React.useState(false);
@@ -130,6 +155,11 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
       const addedField = optionalFields.find((f) => f.name === fieldName);
       if (addedField?.type === 'boolean') {
         form.setValue(`litellm_params.${fieldName}` as `litellm_params.${string}`, false, {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+      } else if (fieldName === 'guardrails') {
+        form.setValue('litellm_params.guardrails', [], {
           shouldDirty: true,
           shouldTouch: true,
         });
@@ -257,7 +287,12 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
               render={({ field: formField }) => (
                 <FormItem className="space-y-0">
                   <div className="flex items-center justify-between">
-                    <FormLabel className="text-sm font-medium">{field.name}</FormLabel>
+                    <div className="flex items-center gap-2">
+                      <FormLabel className="text-sm font-medium">{field.name}</FormLabel>
+                      {isEnterpriseParam(field.name) ? (
+                        <Badge variant="secondary">Ent.</Badge>
+                      ) : null}
+                    </div>
                     <Button
                       type="button"
                       variant="ghost"
@@ -269,7 +304,59 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
                     </Button>
                   </div>
                   <FormControl>
-                    {field.type === 'boolean' ? (
+                    {field.name === 'guardrails' ? (
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <Input
+                            aria-label="Add guardrail name"
+                            placeholder="e.g. azure-text-moderation"
+                            value={guardrailInput}
+                            onChange={(event) => setGuardrailInput(event.target.value)}
+                          />
+                          <Button
+                            type="button"
+                            onClick={() => {
+                              const current = Array.isArray(formField.value)
+                                ? formField.value.filter(
+                                    (value): value is string => typeof value === 'string'
+                                  )
+                                : [];
+                              addModelGuardrail(current, formField.onChange);
+                            }}
+                          >
+                            Add
+                          </Button>
+                        </div>
+                        {Array.isArray(formField.value) && formField.value.length > 0 ? (
+                          <div className="flex flex-wrap gap-2">
+                            {formField.value
+                              .filter((value): value is string => typeof value === 'string')
+                              .map((guardrail) => (
+                                <Badge key={guardrail} variant="outline" className="gap-1 pr-1">
+                                  <span>{guardrail}</span>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-5 w-5"
+                                    aria-label={`Remove model guardrail ${guardrail}`}
+                                    onClick={() => {
+                                      const current = Array.isArray(formField.value)
+                                        ? formField.value.filter(
+                                            (value): value is string => typeof value === 'string'
+                                          )
+                                        : [];
+                                      removeModelGuardrail(current, guardrail, formField.onChange);
+                                    }}
+                                  >
+                                    <X className="h-3 w-3" />
+                                  </Button>
+                                </Badge>
+                              ))}
+                          </div>
+                        ) : null}
+                      </div>
+                    ) : field.type === 'boolean' ? (
                       <BooleanEnvVarInput
                         value={formField.value as boolean | undefined}
                         onChange={formField.onChange}
@@ -321,7 +408,12 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
                           value={field.name}
                           onSelect={() => handleAddOption(field.name)}
                         >
-                          {field.name}
+                          <div className="flex w-full items-center justify-between gap-2">
+                            <span>{field.name}</span>
+                            {isEnterpriseParam(field.name) ? (
+                              <Badge variant="secondary">Ent.</Badge>
+                            ) : null}
+                          </div>
                         </CommandItem>
                       ))}
                   </CommandGroup>
@@ -330,62 +422,6 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
             </PopoverContent>
           </Popover>
         </div>
-
-        <FormField
-          control={form.control}
-          name="guardrails"
-          render={({ field }) => {
-            const currentGuardrails = Array.isArray(field.value) ? field.value : [];
-            return (
-              <FormItem className="space-y-3 rounded border p-3">
-                <div className="flex items-center justify-between gap-2">
-                  <FormLabel className="text-sm font-medium">guardrails (Enterprise)</FormLabel>
-                  <Badge variant="secondary">Enterprise</Badge>
-                </div>
-                <FormControl>
-                  <div className="space-y-2">
-                    <div className="flex gap-2">
-                      <Input
-                        aria-label="Add guardrail name"
-                        placeholder="e.g. azure-text-moderation"
-                        value={guardrailInput}
-                        onChange={(event) => setGuardrailInput(event.target.value)}
-                      />
-                      <Button
-                        type="button"
-                        onClick={() => addModelGuardrail(currentGuardrails, field.onChange)}
-                      >
-                        Add
-                      </Button>
-                    </div>
-                    {currentGuardrails.length > 0 ? (
-                      <div className="flex flex-wrap gap-2">
-                        {currentGuardrails.map((guardrail) => (
-                          <Badge key={guardrail} variant="outline" className="gap-1 pr-1">
-                            <span>{guardrail}</span>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              className="h-5 w-5"
-                              aria-label={`Remove model guardrail ${guardrail}`}
-                              onClick={() =>
-                                removeModelGuardrail(currentGuardrails, guardrail, field.onChange)
-                              }
-                            >
-                              <X className="h-3 w-3" />
-                            </Button>
-                          </Badge>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            );
-          }}
-        />
       </form>
     </Form>
   );

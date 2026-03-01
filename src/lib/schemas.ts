@@ -11,7 +11,12 @@ export const EnvVarValueSchema = z.discriminatedUnion('mode', [
   }),
 ]);
 
-export const LiteLLMParamValueSchema = z.union([EnvVarValueSchema, z.number(), z.boolean()]);
+export const LiteLLMParamValueSchema = z.union([
+  EnvVarValueSchema,
+  z.number(),
+  z.boolean(),
+  z.array(z.string().min(1)),
+]);
 
 export const LiteLLMParamsSchema = z.record(z.string(), LiteLLMParamValueSchema);
 
@@ -152,7 +157,6 @@ export const ModelEntrySchema = z.object({
   provider: z.string().min(1, 'Provider is required'),
   model: z.string().min(1, 'Model id is required'),
   litellm_params: LiteLLMParamsSchema,
-  guardrails: z.array(z.string().min(1)).optional(),
   rpm: z.number().optional(),
   tpm: z.number().optional(),
   timeout: z.number().optional(),

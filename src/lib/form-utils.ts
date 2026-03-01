@@ -21,7 +21,6 @@ export function defaultModelEntry(providerId = 'openai'): ModelEntry {
     provider: providerId,
     model: '',
     litellm_params: {},
-    guardrails: [],
   };
 }
 

@@ -406,7 +406,6 @@ export function yamlToConfig(content: string): {
     let timeout: number | undefined;
     let stream_timeout: number | undefined;
     let max_retries: number | undefined;
-    let modelGuardrails: string[] | undefined;
 
     for (const [key, value] of Object.entries(rawParams)) {
       if (key === 'model') {
@@ -433,7 +432,10 @@ export function yamlToConfig(content: string): {
         continue;
       }
       if (key === 'guardrails' && Array.isArray(value)) {
-        modelGuardrails = value.filter((item): item is string => typeof item === 'string');
+        const modelGuardrails = value.filter((item): item is string => typeof item === 'string');
+        if (modelGuardrails.length > 0) {
+          litellm_params.guardrails = modelGuardrails;
+        }
         continue;
       }
 
@@ -449,7 +451,6 @@ export function yamlToConfig(content: string): {
       provider,
       model,
       litellm_params,
-      guardrails: modelGuardrails,
       rpm,
       tpm,
       timeout,

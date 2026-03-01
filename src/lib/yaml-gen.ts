@@ -21,7 +21,13 @@ function isEnvVarValue(value: unknown): value is EnvVarValue {
   return typeof value === 'object' && value !== null && 'mode' in value;
 }
 
-function serializeParamValue(value: LiteLLMParams[string]): YamlPrimitive | undefined {
+function serializeParamValue(value: LiteLLMParams[string]): YamlValue | undefined {
+  if (Array.isArray(value)) {
+    const normalized = value.filter(
+      (item): item is string => typeof item === 'string' && item.trim().length > 0
+    );
+    return normalized.length > 0 ? normalized : undefined;
+  }
   if (typeof value === 'number' || typeof value === 'boolean') {
     return value;
   }
@@ -249,8 +255,13 @@ export function configToYaml(
     withOptionalNumber(litellm_params, 'stream_timeout', entry.stream_timeout);
     withOptionalNumber(litellm_params, 'max_retries', entry.max_retries);
 
-    if (entry.guardrails?.length) {
-      litellm_params.guardrails = entry.guardrails;
+    const legacyGuardrails = (entry as ModelEntry & { guardrails?: string[] }).guardrails;
+    if (
+      !litellm_params.guardrails &&
+      Array.isArray(legacyGuardrails) &&
+      legacyGuardrails.length > 0
+    ) {
+      litellm_params.guardrails = legacyGuardrails;
     }
 
     return {
