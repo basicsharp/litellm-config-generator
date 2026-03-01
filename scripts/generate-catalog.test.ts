@@ -2,7 +2,13 @@ import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { parseCliArgs, sanitizeRef, updateIndexJson, type VersionEntry } from './generate-catalog';
+import {
+  parseCliArgs,
+  removeWorktree,
+  sanitizeRef,
+  updateIndexJson,
+  type VersionEntry,
+} from './generate-catalog';
 
 const tempDirs: string[] = [];
 
@@ -73,5 +79,58 @@ describe('generate-catalog helpers', () => {
     expect(parseCliArgs([])).toEqual({});
     expect(parseCliArgs(['--ref', '   '])).toEqual({});
     expect(() => parseCliArgs(['--unknown', 'x'])).toThrow();
+  });
+
+  it('removes worktree via git when git removal succeeds', async () => {
+    const runGitCalls: Array<{ repoPath: string; args: string[] }> = [];
+    let removeDirCalled = false;
+
+    await removeWorktree('/repo/litellm', '/tmp/worktree', {
+      runGitFn: async (repoPath, args) => {
+        runGitCalls.push({ repoPath, args });
+        return '';
+      },
+      removeDirFn: async () => {
+        removeDirCalled = true;
+      },
+    });
+
+    expect(runGitCalls).toEqual([
+      {
+        repoPath: '/repo/litellm',
+        args: ['worktree', 'remove', '--force', '/tmp/worktree'],
+      },
+    ]);
+    expect(removeDirCalled).toBe(false);
+  });
+
+  it('falls back to filesystem cleanup when git worktree remove fails', async () => {
+    const removeDirCalls: string[] = [];
+
+    await removeWorktree('/repo/litellm', '/tmp/worktree', {
+      runGitFn: async () => {
+        throw new Error('git remove failed');
+      },
+      removeDirFn: async (dirPath) => {
+        removeDirCalls.push(dirPath);
+      },
+    });
+
+    expect(removeDirCalls).toEqual(['/tmp/worktree']);
+  });
+
+  it('throws a descriptive error when both git and filesystem cleanup fail', async () => {
+    await expect(
+      removeWorktree('/repo/litellm', '/tmp/worktree', {
+        runGitFn: async () => {
+          throw new Error('git remove failed');
+        },
+        removeDirFn: async () => {
+          throw new Error('rm failed');
+        },
+      })
+    ).rejects.toThrow(
+      'Failed to remove temporary worktree at "/tmp/worktree". git worktree remove failed: git remove failed. filesystem cleanup failed: rm failed'
+    );
   });
 });

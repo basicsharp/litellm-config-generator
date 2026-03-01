@@ -128,6 +128,10 @@ async function runGit(repoPath: string, args: string[]): Promise<string> {
   return stdout.trim();
 }
 
+function formatUnknownError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
 export async function resolveCommitSha(repoPath: string): Promise<string> {
   const sha = await runGit(repoPath, ['rev-parse', '--short', 'HEAD']);
   if (!sha) {
@@ -155,11 +159,35 @@ export async function addWorktree(
   }
 }
 
-export async function removeWorktree(submodulePath: string, worktreePath: string): Promise<void> {
+type RemoveWorktreeOptions = {
+  runGitFn?: (repoPath: string, args: string[]) => Promise<string>;
+  removeDirFn?: (dirPath: string) => Promise<void>;
+};
+
+export async function removeWorktree(
+  submodulePath: string,
+  worktreePath: string,
+  options: RemoveWorktreeOptions = {}
+): Promise<void> {
+  const runGitFn = options.runGitFn ?? runGit;
+  const removeDirFn =
+    options.removeDirFn ??
+    (async (dirPath: string) => {
+      await fs.rm(dirPath, { recursive: true, force: true });
+    });
+
   try {
-    await runGit(submodulePath, ['worktree', 'remove', '--force', worktreePath]);
-  } catch {
+    await runGitFn(submodulePath, ['worktree', 'remove', '--force', worktreePath]);
     return;
+  } catch (gitError) {
+    try {
+      await removeDirFn(worktreePath);
+      return;
+    } catch (removeError) {
+      throw new Error(
+        `Failed to remove temporary worktree at "${worktreePath}". git worktree remove failed: ${formatUnknownError(gitError)}. filesystem cleanup failed: ${formatUnknownError(removeError)}`
+      );
+    }
   }
 }
 
@@ -514,7 +542,13 @@ export async function main(): Promise<void> {
     );
   } finally {
     if (worktreePath) {
-      await removeWorktree(litellmSubmodulePath, worktreePath);
+      try {
+        await removeWorktree(litellmSubmodulePath, worktreePath);
+      } catch (cleanupError) {
+        console.warn(
+          `Warning: Failed to clean up temporary worktree at "${worktreePath}": ${formatUnknownError(cleanupError)}`
+        );
+      }
     }
   }
 }
