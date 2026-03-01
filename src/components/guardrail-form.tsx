@@ -39,11 +39,22 @@ export function GuardrailForm({ entry, onSave }: GuardrailFormProps) {
   }, [form, onSave]);
 
   useEffect(() => {
-    form.reset(entry);
+    if (entry.id !== form.getValues('id')) {
+      form.reset(entry);
+    }
   }, [entry, form]);
 
   useEffect(() => {
     const subscription = form.watch(() => {
+      const guardrailName = form.getValues('guardrail_name');
+      if (guardrailName.trim().length === 0) {
+        form.setError('guardrail_name', {
+          type: 'required',
+          message: 'Guardrail name is required',
+        });
+        return;
+      }
+      form.clearErrors('guardrail_name');
       submitHandler();
     });
 
@@ -56,11 +67,15 @@ export function GuardrailForm({ entry, onSave }: GuardrailFormProps) {
 
   const updateDraft = useCallback(
     (patch: Partial<GuardrailEntry>) => {
-      const next = { ...form.getValues(), ...patch };
-      form.reset(next, {
-        keepDirty: true,
-        keepTouched: true,
-      });
+      const updates = Object.entries(patch) as Array<
+        [keyof GuardrailEntry, GuardrailEntry[keyof GuardrailEntry]]
+      >;
+      for (const [key, value] of updates) {
+        form.setValue(key, value, {
+          shouldDirty: true,
+          shouldTouch: true,
+        });
+      }
     },
     [form]
   );
@@ -91,7 +106,12 @@ export function GuardrailForm({ entry, onSave }: GuardrailFormProps) {
             <FormItem>
               <FormLabel>Guardrail Name</FormLabel>
               <FormControl>
-                <Input {...field} aria-label="Guardrail name" placeholder="Guardrail name" />
+                <Input
+                  {...field}
+                  aria-label="Guardrail name"
+                  placeholder="Guardrail name"
+                  required
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -128,18 +148,26 @@ export function GuardrailForm({ entry, onSave }: GuardrailFormProps) {
           render={() => (
             <FormItem>
               <FormLabel>Mode</FormLabel>
+              <p className="text-xs text-muted-foreground">At least one mode must stay selected.</p>
               <div className="space-y-1">
                 {GUARDRAIL_MODES.map((mode) => (
                   <label key={mode} className="flex items-center gap-2 text-sm">
                     <input
                       type="checkbox"
                       checked={modeSet.has(mode)}
+                      disabled={modeSet.size === 1 && modeSet.has(mode)}
                       onChange={(event) => toggleMode(mode, event.target.checked)}
                     />
                     {mode}
                   </label>
                 ))}
               </div>
+              <p className="text-xs text-muted-foreground">
+                Tag-based mode mapping (`mode.tags`, `mode.default`) is currently YAML-only.
+                <span className="ml-1 inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-[10px] font-semibold text-secondary-foreground">
+                  Ent.
+                </span>
+              </p>
               <FormMessage />
             </FormItem>
           )}

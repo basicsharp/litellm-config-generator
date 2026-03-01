@@ -41,10 +41,20 @@ describe('GuardrailForm', () => {
 
     await selectGuardrailProvider(user, 'litellm_content_filter');
 
+    expect(screen.getByText('Ent.')).not.toBeNull();
+    expect(screen.getByText(/Tag-based mode mapping/)).not.toBeNull();
+    expect(screen.getByText('At least one mode must stay selected.')).not.toBeNull();
+
+    const preCall = screen.getByRole('checkbox', { name: 'pre_call' });
+    expect((preCall as HTMLInputElement).disabled).toBe(true);
+
     const postCall = screen.getByRole('checkbox', { name: 'post_call' });
     await user.click(postCall);
+    expect((screen.getByRole('checkbox', { name: 'pre_call' }) as HTMLInputElement).disabled).toBe(
+      false
+    );
     expect(onSave).toHaveBeenCalled();
-  });
+  }, 15000);
 
   it('supports api_key env-var toggle', async () => {
     const user = userEvent.setup();
@@ -56,6 +66,19 @@ describe('GuardrailForm', () => {
 
     const lastCall = onSave.mock.calls.at(-1)?.[0] as GuardrailEntry;
     expect(lastCall.api_key).toEqual({ mode: 'env', varName: 'MY_GUARDRAIL_KEY' });
+  });
+
+  it('requires guardrail name before saving', async () => {
+    const user = userEvent.setup();
+    const onSave = vi.fn();
+
+    render(<GuardrailForm entry={baseEntry} onSave={onSave} />);
+
+    const nameInput = screen.getByLabelText('Guardrail name');
+    await user.clear(nameInput);
+
+    expect(screen.getByText('Guardrail name is required')).not.toBeNull();
+    expect(onSave).not.toHaveBeenCalled();
   });
 
   it('clears provider-specific fields when provider changes', async () => {
@@ -91,9 +114,10 @@ describe('GuardrailForm', () => {
       />
     );
 
-    await user.click(screen.getByRole('checkbox', { name: 'pre_call' }));
-    const lastCall = onSave.mock.calls.at(-1)?.[0] as GuardrailEntry;
-    expect(lastCall.mode).toEqual(['pre_call']);
+    const preCall = screen.getByRole('checkbox', { name: 'pre_call' }) as HTMLInputElement;
+    expect(preCall.disabled).toBe(true);
+    await user.click(preCall);
+    expect(onSave).not.toHaveBeenCalled();
   });
 
   it('renders provider-specific subforms for selected provider values', async () => {
@@ -131,4 +155,25 @@ describe('GuardrailForm', () => {
     expect((paramInput as HTMLInputElement).value).toBe('t');
     expect(onSave).toHaveBeenCalled();
   });
+
+  it('keeps focus when typing guardrail info param name with parent state updates', async () => {
+    const user = userEvent.setup();
+
+    function Harness() {
+      const [current, setCurrent] = React.useState<GuardrailEntry>(baseEntry);
+      return <GuardrailForm entry={current} onSave={setCurrent} />;
+    }
+
+    render(<Harness />);
+
+    await user.click(screen.getByRole('button', { name: 'Guardrail Info' }));
+    await user.click(screen.getByRole('button', { name: 'Add Param' }));
+
+    const nameInput = screen.getByLabelText('Param name 1') as HTMLInputElement;
+    await user.click(nameInput);
+    await user.type(nameInput, 'threshold');
+
+    expect(nameInput.value).toBe('threshold');
+    expect(document.activeElement).toBe(nameInput);
+  }, 15000);
 });

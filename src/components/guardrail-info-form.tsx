@@ -41,7 +41,7 @@ export function GuardrailInfoForm({ value, onChange }: GuardrailInfoFormProps) {
         <div className="mt-3 space-y-3">
           {params.map((param, index) => (
             <div
-              key={`${param.name}-${index}`}
+              key={`param-${index}`}
               className="grid gap-2 rounded border p-2 md:grid-cols-[1fr_1fr_2fr_auto]"
             >
               <Input
