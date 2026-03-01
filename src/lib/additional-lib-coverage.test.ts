@@ -6,7 +6,7 @@ import {
   getProviders,
   type CatalogData,
 } from '@/lib/catalog';
-import { defaultModelEntry } from '@/lib/form-utils';
+import { defaultGuardrailEntry, defaultModelEntry } from '@/lib/form-utils';
 import { configToYaml } from '@/lib/yaml-gen';
 import { yamlToConfig } from '@/lib/yaml-parse';
 
@@ -75,6 +75,10 @@ describe('additional lib coverage', () => {
     expect(entry.model_name).toBe('');
     expect(entry.model).toBe('');
     expect(entry.id.length).toBeGreaterThan(0);
+
+    const guardrail = defaultGuardrailEntry();
+    expect(guardrail.guardrail).toBe('litellm_content_filter');
+    expect(guardrail.mode).toEqual(['pre_call']);
   });
 
   it('falls back to timestamp id when crypto.randomUUID is unavailable', () => {

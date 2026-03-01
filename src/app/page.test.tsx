@@ -20,6 +20,7 @@ let importedModelsMock: unknown[] = [
     litellm_params: {},
   },
 ];
+let importedGuardrailsMock: unknown[] = [];
 
 const latestCatalogMock = {
   meta: {
@@ -187,17 +188,74 @@ vi.mock('@/components/model-list-panel', () => ({
   ),
 }));
 
+vi.mock('@/components/guardrail-list-panel', () => ({
+  GuardrailListPanel: ({
+    guardrails,
+    onAddGuardrail,
+    onSaveGuardrail,
+    onDeleteGuardrail,
+  }: {
+    guardrails: Array<{
+      id: string;
+      guardrail_name: string;
+      guardrail: string;
+      mode: string[];
+      _extra: Record<string, unknown>;
+    }>;
+    onAddGuardrail: () => void;
+    onSaveGuardrail: (entry: {
+      id: string;
+      guardrail_name: string;
+      guardrail: string;
+      mode: string[];
+      _extra: Record<string, unknown>;
+    }) => void;
+    onDeleteGuardrail: (id: string) => void;
+  }) => (
+    <div>
+      <div data-testid="guardrails-count">{guardrails.length}</div>
+      <button type="button" onClick={onAddGuardrail}>
+        Add guardrail
+      </button>
+      <button
+        type="button"
+        onClick={() =>
+          onSaveGuardrail({
+            id: 'guardrail-1',
+            guardrail_name: 'saved-guardrail',
+            guardrail: 'generic_guardrail_api',
+            mode: ['pre_call'],
+            _extra: {},
+          })
+        }
+      >
+        Save guardrail mock
+      </button>
+      <button type="button" onClick={() => onDeleteGuardrail('guardrail-1')}>
+        Delete guardrail mock
+      </button>
+    </div>
+  ),
+}));
+
 vi.mock('@/components/yaml-preview', () => ({
-  YamlPreview: ({ models }: { models: unknown[] }) => <div>Preview {models.length}</div>,
+  YamlPreview: ({ models, guardrails }: { models: unknown[]; guardrails: unknown[] }) => (
+    <div>
+      Preview {models.length} / {guardrails.length}
+    </div>
+  ),
 }));
 
 vi.mock('@/components/import-dialog', () => ({
   ImportDialog: ({
     onImport,
   }: {
-    onImport: (models: unknown[], catalogRef: string | null) => void;
+    onImport: (models: unknown[], guardrails: unknown[], catalogRef: string | null) => void;
   }) => (
-    <button type="button" onClick={() => onImport(importedModelsMock, importedCatalogRefMock)}>
+    <button
+      type="button"
+      onClick={() => onImport(importedModelsMock, importedGuardrailsMock, importedCatalogRefMock)}
+    >
       Import now
     </button>
   ),
@@ -210,6 +268,13 @@ vi.mock('@/lib/form-utils', () => ({
     provider: 'openai',
     model: '',
     litellm_params: {},
+  })),
+  defaultGuardrailEntry: vi.fn(() => ({
+    id: 'guardrail-1',
+    guardrail_name: 'guardrail',
+    guardrail: 'litellm_content_filter',
+    mode: ['pre_call'],
+    _extra: {},
   })),
 }));
 
@@ -235,6 +300,7 @@ describe('HomePage', () => {
     vi.mocked(toast.success).mockReset();
     vi.mocked(toast.error).mockReset();
     importedCatalogRefMock = 'v1.81.14.rc.2';
+    importedGuardrailsMock = [];
     importedModelsMock = [
       {
         id: 'imported-1',
@@ -304,12 +370,32 @@ describe('HomePage', () => {
     await user.click(screen.getAllByRole('button', { name: 'Delete mock' })[0] as HTMLElement);
     expect(screen.getAllByTestId('models-count')[0]?.textContent).toBe('0');
 
+    await user.click(screen.getAllByRole('tab', { name: 'Guardrails' })[0] as HTMLElement);
+    expect(screen.getByTestId('guardrails-count').textContent).toBe('0');
+    await user.click(screen.getByRole('button', { name: 'Add guardrail' }));
+    expect(screen.getByTestId('guardrails-count').textContent).toBe('1');
+
+    await user.click(screen.getByRole('button', { name: 'Save guardrail mock' }));
+    expect(screen.getByTestId('guardrails-count').textContent).toBe('1');
+
+    await user.click(screen.getByRole('button', { name: 'Delete guardrail mock' }));
+    expect(screen.getByTestId('guardrails-count').textContent).toBe('0');
+
+    await user.click(screen.getAllByRole('tab', { name: 'Guardrails' })[1] as HTMLElement);
+    await user.click(screen.getAllByRole('button', { name: 'Add guardrail' })[0] as HTMLElement);
+    expect(screen.getAllByTestId('guardrails-count')[0]?.textContent).toBe('1');
+
+    await user.click(screen.getAllByRole('tab', { name: 'Models' })[0] as HTMLElement);
+
     await user.click(screen.getByRole('button', { name: 'Import now' }));
     expect(screen.getAllByTestId('models-count')[0]?.textContent).toBe('1');
     expect(setSelectedVersionMock).toHaveBeenCalledWith('v1.81.14.rc.2');
-    expect(toast.success).toHaveBeenCalledWith('Imported 1 models (litellm:v1.81.14.rc.2)', {
-      duration: 3000,
-    });
+    expect(toast.success).toHaveBeenCalledWith(
+      'Imported 1 models, 0 guardrails (litellm:v1.81.14.rc.2)',
+      {
+        duration: 3000,
+      }
+    );
 
     await user.click(screen.getByRole('button', { name: 'Download' }));
     expect(URL.createObjectURL).toHaveBeenCalledTimes(1);
@@ -317,11 +403,32 @@ describe('HomePage', () => {
     expect(toast.success).toHaveBeenCalledWith('Downloaded config.yaml', {
       duration: 3000,
     });
-    expect(configToYaml).toHaveBeenCalledWith(expect.any(Array), {
+    expect(configToYaml).toHaveBeenCalledWith(expect.any(Array), expect.any(Array), {
       catalogRef: 'v1.81.14.rc.2',
     });
 
     expect(toast.success).toHaveBeenCalled();
+  }, 15000);
+
+  it('uses singular guardrail label when exactly one guardrail is imported', async () => {
+    const user = userEvent.setup();
+    importedCatalogRefMock = null;
+    importedGuardrailsMock = [
+      {
+        id: 'g1',
+        guardrail_name: 'one',
+        guardrail: 'generic_guardrail_api',
+        mode: ['pre_call'],
+        _extra: {},
+      },
+    ];
+
+    render(<HomePage />);
+    await user.click(screen.getByRole('button', { name: 'Import now' }));
+
+    expect(toast.success).toHaveBeenCalledWith('Imported 1 models, 1 guardrail', {
+      duration: 3000,
+    });
   });
 
   it('does not switch catalog version when imported ref is missing or unknown', async () => {
@@ -347,7 +454,7 @@ describe('HomePage', () => {
     };
 
     render(<HomePage />);
-    expect(configToYaml).toHaveBeenCalledWith(expect.any(Array), {
+    expect(configToYaml).toHaveBeenCalledWith(expect.any(Array), expect.any(Array), {
       catalogRef: undefined,
     });
   });

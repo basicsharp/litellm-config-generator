@@ -4,17 +4,18 @@ import React from 'react';
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { GuardrailListPanel } from '@/components/guardrail-list-panel';
 import { ImportDialog } from '@/components/import-dialog';
 import { ModelListPanel } from '@/components/model-list-panel';
 import { Toolbar } from '@/components/toolbar';
 import { YamlPreview } from '@/components/yaml-preview';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { defaultModelEntry } from '@/lib/form-utils';
+import { defaultGuardrailEntry, defaultModelEntry } from '@/lib/form-utils';
 import { useCatalogContext } from '@/lib/catalog-context';
 import { findUnavailableModels } from '@/lib/model-compatibility';
 import { configToYaml } from '@/lib/yaml-gen';
-import type { ModelEntry } from '@/lib/schemas';
+import type { GuardrailEntry, ModelEntry } from '@/lib/schemas';
 
 type ModelsAction =
   | { type: 'add'; payload: ModelEntry }
@@ -22,7 +23,26 @@ type ModelsAction =
   | { type: 'remove'; payload: { id: string } }
   | { type: 'replace'; payload: ModelEntry[] };
 
+type GuardrailsAction =
+  | { type: 'add'; payload: GuardrailEntry }
+  | { type: 'update'; payload: GuardrailEntry }
+  | { type: 'remove'; payload: { id: string } }
+  | { type: 'replace'; payload: GuardrailEntry[] };
+
 function modelsReducer(state: ModelEntry[], action: ModelsAction): ModelEntry[] {
+  if (action.type === 'add') {
+    return [...state, action.payload];
+  }
+  if (action.type === 'update') {
+    return state.map((item) => (item.id === action.payload.id ? action.payload : item));
+  }
+  if (action.type === 'remove') {
+    return state.filter((item) => item.id !== action.payload.id);
+  }
+  return action.payload;
+}
+
+function guardrailsReducer(state: GuardrailEntry[], action: GuardrailsAction): GuardrailEntry[] {
   if (action.type === 'add') {
     return [...state, action.payload];
   }
@@ -38,7 +58,9 @@ function modelsReducer(state: ModelEntry[], action: ModelsAction): ModelEntry[] 
 export default function HomePage() {
   const { versions, selectedVersion, setSelectedVersion, catalog, isLoading } = useCatalogContext();
   const [models, dispatch] = useReducer(modelsReducer, [] as ModelEntry[]);
+  const [guardrails, dispatchGuardrails] = useReducer(guardrailsReducer, [] as GuardrailEntry[]);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const [expandedGuardrailIds, setExpandedGuardrailIds] = useState<Set<string>>(new Set());
   const [importOpen, setImportOpen] = useState(false);
   const lastValidationKeyRef = useRef<string | null>(null);
 
@@ -48,8 +70,8 @@ export default function HomePage() {
   );
 
   const yaml = useMemo(
-    () => configToYaml(models, { catalogRef: selectedCatalogRef ?? undefined }),
-    [models, selectedCatalogRef]
+    () => configToYaml(models, guardrails, { catalogRef: selectedCatalogRef ?? undefined }),
+    [guardrails, models, selectedCatalogRef]
   );
 
   useEffect(() => {
@@ -113,28 +135,12 @@ export default function HomePage() {
       />
 
       <div className="hidden gap-4 md:grid md:grid-cols-[3fr_auto_2fr]">
-        <ModelListPanel
-          models={models}
-          expandedIds={expandedIds}
-          onAddModel={() => {
-            const newEntry = defaultModelEntry('openai');
-            dispatch({ type: 'add', payload: newEntry });
-            setExpandedIds((previous) => new Set(previous).add(newEntry.id));
-          }}
-          onSaveModel={(entry) => dispatch({ type: 'update', payload: entry })}
-          onDeleteModel={(id) => dispatch({ type: 'remove', payload: { id } })}
-        />
-        <Separator orientation="vertical" />
-        <YamlPreview models={models} catalogRef={selectedCatalogRef ?? undefined} />
-      </div>
-
-      <div className="md:hidden">
-        <Tabs defaultValue="edit">
+        <Tabs defaultValue="models">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="edit">Edit</TabsTrigger>
-            <TabsTrigger value="preview">Preview</TabsTrigger>
+            <TabsTrigger value="models">Models</TabsTrigger>
+            <TabsTrigger value="guardrails">Guardrails</TabsTrigger>
           </TabsList>
-          <TabsContent value="edit" className="mt-4">
+          <TabsContent value="models" className="mt-4">
             <ModelListPanel
               models={models}
               expandedIds={expandedIds}
@@ -147,8 +153,67 @@ export default function HomePage() {
               onDeleteModel={(id) => dispatch({ type: 'remove', payload: { id } })}
             />
           </TabsContent>
+          <TabsContent value="guardrails" className="mt-4">
+            <GuardrailListPanel
+              guardrails={guardrails}
+              expandedIds={expandedGuardrailIds}
+              onAddGuardrail={() => {
+                const newEntry = defaultGuardrailEntry();
+                dispatchGuardrails({ type: 'add', payload: newEntry });
+                setExpandedGuardrailIds((previous) => new Set(previous).add(newEntry.id));
+              }}
+              onSaveGuardrail={(entry) => dispatchGuardrails({ type: 'update', payload: entry })}
+              onDeleteGuardrail={(id) => dispatchGuardrails({ type: 'remove', payload: { id } })}
+            />
+          </TabsContent>
+        </Tabs>
+        <Separator orientation="vertical" />
+        <YamlPreview
+          models={models}
+          guardrails={guardrails}
+          catalogRef={selectedCatalogRef ?? undefined}
+        />
+      </div>
+
+      <div className="md:hidden">
+        <Tabs defaultValue="models">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="models">Models</TabsTrigger>
+            <TabsTrigger value="guardrails">Guardrails</TabsTrigger>
+            <TabsTrigger value="preview">Preview</TabsTrigger>
+          </TabsList>
+          <TabsContent value="models" className="mt-4">
+            <ModelListPanel
+              models={models}
+              expandedIds={expandedIds}
+              onAddModel={() => {
+                const newEntry = defaultModelEntry('openai');
+                dispatch({ type: 'add', payload: newEntry });
+                setExpandedIds((previous) => new Set(previous).add(newEntry.id));
+              }}
+              onSaveModel={(entry) => dispatch({ type: 'update', payload: entry })}
+              onDeleteModel={(id) => dispatch({ type: 'remove', payload: { id } })}
+            />
+          </TabsContent>
+          <TabsContent value="guardrails" className="mt-4">
+            <GuardrailListPanel
+              guardrails={guardrails}
+              expandedIds={expandedGuardrailIds}
+              onAddGuardrail={() => {
+                const newEntry = defaultGuardrailEntry();
+                dispatchGuardrails({ type: 'add', payload: newEntry });
+                setExpandedGuardrailIds((previous) => new Set(previous).add(newEntry.id));
+              }}
+              onSaveGuardrail={(entry) => dispatchGuardrails({ type: 'update', payload: entry })}
+              onDeleteGuardrail={(id) => dispatchGuardrails({ type: 'remove', payload: { id } })}
+            />
+          </TabsContent>
           <TabsContent value="preview" className="mt-4">
-            <YamlPreview models={models} catalogRef={selectedCatalogRef ?? undefined} />
+            <YamlPreview
+              models={models}
+              guardrails={guardrails}
+              catalogRef={selectedCatalogRef ?? undefined}
+            />
           </TabsContent>
         </Tabs>
       </div>
@@ -156,9 +221,11 @@ export default function HomePage() {
       <ImportDialog
         open={importOpen}
         existingModelCount={models.length}
+        existingGuardrailCount={guardrails.length}
         onOpenChange={setImportOpen}
-        onImport={(importedModels, importedCatalogRef) => {
+        onImport={(importedModels, importedGuardrails, importedCatalogRef) => {
           dispatch({ type: 'replace', payload: importedModels });
+          dispatchGuardrails({ type: 'replace', payload: importedGuardrails });
 
           if (importedCatalogRef) {
             const matchingVersion = versions.find((version) => version.ref === importedCatalogRef);
@@ -168,10 +235,15 @@ export default function HomePage() {
           }
 
           setExpandedIds(new Set());
+          setExpandedGuardrailIds(new Set());
           const versionSuffix = importedCatalogRef ? ` (litellm:${importedCatalogRef})` : '';
-          toast.success(`Imported ${importedModels.length} models${versionSuffix}`, {
-            duration: 3000,
-          });
+          const guardrailLabel = importedGuardrails.length === 1 ? 'guardrail' : 'guardrails';
+          toast.success(
+            `Imported ${importedModels.length} models, ${importedGuardrails.length} ${guardrailLabel}${versionSuffix}`,
+            {
+              duration: 3000,
+            }
+          );
         }}
       />
     </main>

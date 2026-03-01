@@ -15,24 +15,31 @@ import {
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { yamlToConfig } from '@/lib/yaml-parse';
-import type { ModelEntry } from '@/lib/schemas';
+import type { GuardrailEntry, ModelEntry } from '@/lib/schemas';
 
 type ImportDialogProps = {
   open: boolean;
   existingModelCount: number;
+  existingGuardrailCount: number;
   onOpenChange: (open: boolean) => void;
-  onImport: (models: ModelEntry[], catalogRef: string | null) => void;
+  onImport: (
+    models: ModelEntry[],
+    importedGuardrails: GuardrailEntry[],
+    catalogRef: string | null
+  ) => void;
 };
 
 export function ImportDialog({
   open,
   existingModelCount,
+  existingGuardrailCount,
   onOpenChange,
   onImport,
 }: ImportDialogProps) {
   const [content, setContent] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
   const [pendingModels, setPendingModels] = useState<ModelEntry[] | null>(null);
+  const [pendingGuardrails, setPendingGuardrails] = useState<GuardrailEntry[] | null>(null);
   const [pendingCatalogRef, setPendingCatalogRef] = useState<string | null>(null);
 
   const handleImport = () => {
@@ -42,15 +49,17 @@ export function ImportDialog({
       return;
     }
 
-    if (existingModelCount > 0) {
+    if (existingModelCount > 0 || (existingGuardrailCount > 0 && parsed.guardrails.length > 0)) {
       setPendingModels(parsed.models);
+      setPendingGuardrails(parsed.guardrails);
       setPendingCatalogRef(parsed.catalogRef);
       return;
     }
 
-    onImport(parsed.models, parsed.catalogRef);
+    onImport(parsed.models, parsed.guardrails, parsed.catalogRef);
     setErrors([]);
     setPendingModels(null);
+    setPendingGuardrails(null);
     setPendingCatalogRef(null);
     onOpenChange(false);
   };
@@ -74,14 +83,19 @@ export function ImportDialog({
 
         {pendingModels ? (
           <Alert>
-            <AlertTitle>This will replace your current models. Continue?</AlertTitle>
+            <AlertTitle>
+              This will replace your current models
+              {pendingGuardrails && pendingGuardrails.length > 0 ? ' and guardrails' : ''}.
+              Continue?
+            </AlertTitle>
             <AlertDescription className="mt-2 flex gap-2">
               <Button
                 type="button"
                 size="sm"
                 onClick={() => {
-                  onImport(pendingModels, pendingCatalogRef);
+                  onImport(pendingModels, pendingGuardrails ?? [], pendingCatalogRef);
                   setPendingModels(null);
+                  setPendingGuardrails(null);
                   setPendingCatalogRef(null);
                   setErrors([]);
                   onOpenChange(false);
@@ -95,6 +109,7 @@ export function ImportDialog({
                 variant="outline"
                 onClick={() => {
                   setPendingModels(null);
+                  setPendingGuardrails(null);
                   setPendingCatalogRef(null);
                 }}
               >

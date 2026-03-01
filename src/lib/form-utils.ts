@@ -1,6 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { ModelEntrySchema, type ModelEntry } from '@/lib/schemas';
+import {
+  GuardrailEntrySchema,
+  ModelEntrySchema,
+  type GuardrailEntry,
+  type ModelEntry,
+} from '@/lib/schemas';
 
 function makeId(): string {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -19,4 +24,18 @@ export function defaultModelEntry(providerId = 'openai'): ModelEntry {
   };
 }
 
+export function defaultGuardrailEntry(
+  guardrailProvider = 'litellm_content_filter'
+): GuardrailEntry {
+  return {
+    id: makeId(),
+    guardrail_name: '',
+    guardrail: guardrailProvider,
+    mode: ['pre_call'],
+    default_on: false,
+    _extra: {},
+  };
+}
+
 export const modelEntryResolver = zodResolver(ModelEntrySchema);
+export const guardrailEntryResolver = zodResolver(GuardrailEntrySchema);

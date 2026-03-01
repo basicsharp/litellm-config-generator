@@ -126,4 +126,52 @@ describe('findUnavailableModels', () => {
 
     expect(findUnavailableModels(models, unprefixedCatalog)).toEqual([]);
   });
+
+  it('matches prefixed catalog ids when configured model is unprefixed', () => {
+    const models: ModelEntry[] = [
+      {
+        id: '1',
+        model_name: 'vertex-unprefixed',
+        provider: 'vertex_ai',
+        model: 'gemini-3.1-pro-preview',
+        litellm_params: {},
+      },
+    ];
+
+    expect(findUnavailableModels(models, catalog)).toEqual([]);
+  });
+
+  it('normalizes azure_text provider id to azure', () => {
+    const azureCatalog: CatalogData = {
+      ...catalog,
+      providers: {
+        ...catalog.providers,
+        azure: {
+          label: 'Azure',
+          models: [
+            {
+              id: 'gpt-4o-mini',
+              mode: 'chat',
+              maxTokens: null,
+              inputCostPerToken: null,
+              outputCostPerToken: null,
+            },
+          ],
+          fields: { base: [], extra: [] },
+        },
+      },
+    };
+
+    const models: ModelEntry[] = [
+      {
+        id: '1',
+        model_name: 'azure-normalized',
+        provider: 'azure_text',
+        model: 'gpt-4o-mini',
+        litellm_params: {},
+      },
+    ];
+
+    expect(findUnavailableModels(models, azureCatalog)).toEqual([]);
+  });
 });
