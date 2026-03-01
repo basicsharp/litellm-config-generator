@@ -7,6 +7,7 @@ type ConfigToYamlOptions = {
 };
 
 type YamlPrimitive = string | number | boolean;
+type YamlValue = YamlPrimitive | string[];
 
 type SerializedGuardrailEntry = {
   guardrail_name: string;
@@ -48,7 +49,7 @@ function serializeEnvVarValue(value: EnvVarValue | undefined): string | undefine
 }
 
 function withOptionalNumber(
-  target: Record<string, YamlPrimitive>,
+  target: Record<string, YamlValue>,
   key: string,
   value: number | undefined
 ): void {
@@ -230,7 +231,7 @@ export function configToYaml(
 ): string {
   const { guardrails, options } = resolveConfigArgs(guardrailsOrOptions, maybeOptions);
   const model_list = models.map((entry) => {
-    const litellm_params: Record<string, YamlPrimitive> = {
+    const litellm_params: Record<string, YamlValue> = {
       model: buildModelValue(entry.provider, entry.model),
     };
 
@@ -247,6 +248,10 @@ export function configToYaml(
     withOptionalNumber(litellm_params, 'timeout', entry.timeout);
     withOptionalNumber(litellm_params, 'stream_timeout', entry.stream_timeout);
     withOptionalNumber(litellm_params, 'max_retries', entry.max_retries);
+
+    if (entry.guardrails?.length) {
+      litellm_params.guardrails = entry.guardrails;
+    }
 
     return {
       model_name: entry.model_name,

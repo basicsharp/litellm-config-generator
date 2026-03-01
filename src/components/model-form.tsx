@@ -9,6 +9,7 @@ import { ModelSelect } from '@/components/model-select';
 import { BooleanEnvVarInput } from '@/components/boolean-env-var-input';
 import { ProviderSelect } from '@/components/provider-select';
 import { RateLimitFields } from '@/components/rate-limit-fields';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -83,6 +84,7 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
   const [addOptionOpen, setAddOptionOpen] = React.useState(false);
   const [addOptionQuery, setAddOptionQuery] = React.useState('');
   const [selectedOptionNames, setSelectedOptionNames] = React.useState<string[]>([]);
+  const [guardrailInput, setGuardrailInput] = React.useState('');
 
   useEffect(() => {
     const currentParams = form.getValues('litellm_params');
@@ -149,6 +151,25 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
       form.setValue('litellm_params', nextParams, { shouldDirty: true, shouldTouch: true });
     },
     [form]
+  );
+
+  const addModelGuardrail = useCallback(
+    (current: string[], onChange: (value: string[]) => void) => {
+      const nextGuardrail = guardrailInput.trim();
+      if (!nextGuardrail || current.includes(nextGuardrail)) {
+        return;
+      }
+      onChange([...current, nextGuardrail]);
+      setGuardrailInput('');
+    },
+    [guardrailInput]
+  );
+
+  const removeModelGuardrail = useCallback(
+    (current: string[], guardrail: string, onChange: (value: string[]) => void) => {
+      onChange(current.filter((item) => item !== guardrail));
+    },
+    []
   );
 
   useEffect(() => {
@@ -309,6 +330,62 @@ export function ModelForm({ entry, onSave }: ModelFormProps) {
             </PopoverContent>
           </Popover>
         </div>
+
+        <FormField
+          control={form.control}
+          name="guardrails"
+          render={({ field }) => {
+            const currentGuardrails = Array.isArray(field.value) ? field.value : [];
+            return (
+              <FormItem className="space-y-3 rounded border p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <FormLabel className="text-sm font-medium">guardrails (Enterprise)</FormLabel>
+                  <Badge variant="secondary">Enterprise</Badge>
+                </div>
+                <FormControl>
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <Input
+                        aria-label="Add guardrail name"
+                        placeholder="e.g. azure-text-moderation"
+                        value={guardrailInput}
+                        onChange={(event) => setGuardrailInput(event.target.value)}
+                      />
+                      <Button
+                        type="button"
+                        onClick={() => addModelGuardrail(currentGuardrails, field.onChange)}
+                      >
+                        Add
+                      </Button>
+                    </div>
+                    {currentGuardrails.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {currentGuardrails.map((guardrail) => (
+                          <Badge key={guardrail} variant="outline" className="gap-1 pr-1">
+                            <span>{guardrail}</span>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-5 w-5"
+                              aria-label={`Remove model guardrail ${guardrail}`}
+                              onClick={() =>
+                                removeModelGuardrail(currentGuardrails, guardrail, field.onChange)
+                              }
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </Badge>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
+        />
       </form>
     </Form>
   );

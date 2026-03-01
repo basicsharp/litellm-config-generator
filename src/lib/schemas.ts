@@ -152,6 +152,7 @@ export const ModelEntrySchema = z.object({
   provider: z.string().min(1, 'Provider is required'),
   model: z.string().min(1, 'Model id is required'),
   litellm_params: LiteLLMParamsSchema,
+  guardrails: z.array(z.string().min(1)).optional(),
   rpm: z.number().optional(),
   tpm: z.number().optional(),
   timeout: z.number().optional(),

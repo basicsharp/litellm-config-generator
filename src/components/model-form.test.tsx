@@ -185,4 +185,26 @@ describe('ModelForm provider change behavior', () => {
     const latest = onSave.mock.calls.at(-1)?.[0];
     expect(latest?.litellm_params?.use_psc_endpoint_format).toBe(true);
   });
+
+  it('supports model-level guardrails enterprise field', async () => {
+    const user = userEvent.setup();
+    const onSave = vi.fn();
+
+    render(<ModelForm entry={makeEntry()} onSave={onSave} />);
+
+    expect(screen.getByText('guardrails (Enterprise)')).not.toBeNull();
+
+    await user.type(screen.getByLabelText('Add guardrail name'), 'azure-text-moderation');
+    await user.click(screen.getByRole('button', { name: 'Add' }));
+
+    expect(onSave).toHaveBeenCalled();
+    const latest = onSave.mock.calls.at(-1)?.[0];
+    expect(latest?.guardrails).toEqual(['azure-text-moderation']);
+
+    await user.click(
+      screen.getByRole('button', { name: 'Remove model guardrail azure-text-moderation' })
+    );
+    const afterRemove = onSave.mock.calls.at(-1)?.[0];
+    expect(afterRemove?.guardrails).toEqual([]);
+  });
 });

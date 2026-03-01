@@ -181,4 +181,25 @@ guardrails:
     expect(parsed.guardrails).toHaveLength(1);
     expect(parsed.guardrails[0]?.guardrail_name).toBe('valid');
   });
+
+  it('serializes and parses model-level guardrails', () => {
+    const models: ModelEntry[] = [
+      {
+        id: '1',
+        model_name: 'claude-sonnet-4',
+        provider: 'anthropic',
+        model: 'anthropic/claude-sonnet-4-20250514',
+        litellm_params: {},
+        guardrails: ['azure-text-moderation'],
+      },
+    ];
+
+    const yaml = configToYaml(models);
+    expect(yaml).toContain('guardrails:');
+    expect(yaml).toContain('- azure-text-moderation');
+
+    const parsed = yamlToConfig(yaml);
+    expect(parsed.errors).toEqual([]);
+    expect(parsed.models[0]?.guardrails).toEqual(['azure-text-moderation']);
+  });
 });
