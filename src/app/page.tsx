@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { Github } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { GuardrailListPanel } from '@/components/guardrail-list-panel';
@@ -246,6 +247,17 @@ export default function HomePage() {
           );
         }}
       />
+      <footer className="mt-8 flex justify-center pb-2">
+        <a
+          href="https://github.com/basicsharp/litellm-config-generator"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <Github className="h-3.5 w-3.5" />
+          basicsharp/litellm-config-generator
+        </a>
+      </footer>
     </main>
   );
 }
