@@ -340,18 +340,6 @@ describe('HomePage', () => {
       configurable: true,
       writable: true,
     });
-    const originalCreateElement = document.createElement.bind(document);
-    vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
-      if (tagName.toLowerCase() === 'a') {
-        return {
-          href: '',
-          download: '',
-          click: vi.fn(),
-        } as unknown as HTMLAnchorElement;
-      }
-
-      return originalCreateElement(tagName);
-    });
   });
 
   it('adds, imports, and downloads models', async () => {
@@ -397,6 +385,17 @@ describe('HomePage', () => {
       }
     );
 
+    const originalCreateElement = document.createElement.bind(document);
+    vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
+      if (tagName.toLowerCase() === 'a') {
+        return {
+          href: '',
+          download: '',
+          click: vi.fn(),
+        } as unknown as HTMLAnchorElement;
+      }
+      return originalCreateElement(tagName);
+    });
     await user.click(screen.getByRole('button', { name: 'Download' }));
     expect(URL.createObjectURL).toHaveBeenCalledTimes(1);
     expect(URL.revokeObjectURL).toHaveBeenCalledTimes(1);
