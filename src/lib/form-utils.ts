@@ -14,7 +14,7 @@ function makeId(): string {
   return `model-${Date.now()}`;
 }
 
-export function defaultModelEntry(providerId = 'openai'): ModelEntry {
+export function defaultModelEntry(providerId = 'vertex_ai'): ModelEntry {
   return {
     id: makeId(),
     model_name: '',

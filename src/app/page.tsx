@@ -146,7 +146,7 @@ export default function HomePage() {
               models={models}
               expandedIds={expandedIds}
               onAddModel={() => {
-                const newEntry = defaultModelEntry('openai');
+                const newEntry = defaultModelEntry('vertex_ai');
                 dispatch({ type: 'add', payload: newEntry });
                 setExpandedIds((previous) => new Set(previous).add(newEntry.id));
               }}
@@ -188,7 +188,7 @@ export default function HomePage() {
               models={models}
               expandedIds={expandedIds}
               onAddModel={() => {
-                const newEntry = defaultModelEntry('openai');
+                const newEntry = defaultModelEntry('vertex_ai');
                 dispatch({ type: 'add', payload: newEntry });
                 setExpandedIds((previous) => new Set(previous).add(newEntry.id));
               }}
