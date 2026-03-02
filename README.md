@@ -98,15 +98,28 @@ Writes to:
 
 Note: the generator targets the top providers configured in `scripts/generate-catalog.ts` and only includes providers with chat/completion-capable models in output.
 
+### Scenario 7: Export static site
+
+Use this to build a fully static version of the app for CDN or static hosting.
+
+```bash
+npm run export
+```
+
+This command generates an `out/` directory containing static HTML/CSS/JS assets.
+Serve `out/` with any static file server (for example, `npx serve out`).
+
 ## Scripts
 
 - `npm run dev` - start Next.js dev server
 - `npm run build` - create production build
-- `npm run start` - run production server
+- `npm run export` - create static export output in `out/`
 - `npm run lint` - run ESLint checks
 - `npm run test` - run Vitest
 - `npm run test:coverage` - run Vitest with coverage report
 - `npm run generate:catalog` - regenerate versioned catalogs under `public/catalogs/`
+
+Note: `next start` is not used for static export mode; serve the generated `out/` directory with a static host/server instead.
 
 ## Project Map
 
