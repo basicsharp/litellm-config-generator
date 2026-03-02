@@ -38,6 +38,22 @@ import { Textarea } from '@/components/ui/textarea';
 import { Toggle } from '@/components/ui/toggle';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 describe('ui components smoke', () => {
   it('renders lightweight wrappers', () => {
@@ -140,5 +156,41 @@ describe('ui components smoke', () => {
     expect(screen.getByText('Open')).not.toBeNull();
     expect(screen.getByText('Hover')).not.toBeNull();
     expect(screen.getByText('Scrollable')).not.toBeNull();
+  });
+
+  it('renders dropdown menu components', () => {
+    render(
+      <DropdownMenu open>
+        <DropdownMenuTrigger>Open menu</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel inset>Label</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem>
+              Item one <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuCheckboxItem checked>Checked</DropdownMenuCheckboxItem>
+          </DropdownMenuGroup>
+          <DropdownMenuRadioGroup value="a">
+            <DropdownMenuRadioItem value="a">Radio A</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="b">Radio B</DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger inset>Sub</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem>Sub item</DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+          <DropdownMenuItem inset>Inset item</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+
+    expect(screen.getByText('Label')).not.toBeNull();
+    expect(screen.getByText('Item one')).not.toBeNull();
+    expect(screen.getByText('Checked')).not.toBeNull();
+    expect(screen.getByText('Radio A')).not.toBeNull();
+    expect(screen.getByText('Sub')).not.toBeNull();
+    expect(screen.getByText('Inset item')).not.toBeNull();
   });
 });

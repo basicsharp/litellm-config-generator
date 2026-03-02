@@ -37,7 +37,7 @@ export function GuardrailGenericForm({ entry, onChange }: GuardrailGenericFormPr
           <Button
             type="button"
             size="sm"
-            variant="outline"
+            variant="secondary"
             onClick={() =>
               onChange({
                 additional_provider_specific_params: {

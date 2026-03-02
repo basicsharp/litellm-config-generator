@@ -43,6 +43,7 @@ export function ImportDialog({
   const [pendingCatalogRef, setPendingCatalogRef] = useState<string | null>(null);
 
   const handleImport = () => {
+    setErrors([]);
     const parsed = yamlToConfig(content);
     if (parsed.errors.length > 0) {
       setErrors(parsed.errors);
@@ -106,7 +107,7 @@ export function ImportDialog({
               <Button
                 type="button"
                 size="sm"
-                variant="outline"
+                variant="secondary"
                 onClick={() => {
                   setPendingModels(null);
                   setPendingGuardrails(null);
@@ -127,7 +128,7 @@ export function ImportDialog({
         ) : null}
 
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+          <Button type="button" variant="secondary" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button type="button" onClick={handleImport}>

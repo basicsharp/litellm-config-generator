@@ -76,7 +76,7 @@ export function EnvVarInput({
           {secret ? (
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               size="icon"
               onClick={() => setShowSecret((current) => !current)}
               aria-label={showSecret ? 'Hide secret' : 'Show secret'}

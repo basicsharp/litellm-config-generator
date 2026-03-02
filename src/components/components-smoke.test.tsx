@@ -244,6 +244,8 @@ describe('app component smoke', () => {
     await user.type(screen.getByPlaceholderText(/model_list:/i), 'model_list:\n  - model_name: ok');
     await user.click(screen.getByRole('button', { name: 'Import' }));
 
+    // error must be cleared immediately when Import is clicked again
+    expect(screen.queryByText('Import failed')).toBeNull();
     expect(onImport).toHaveBeenCalledTimes(1);
   });
 

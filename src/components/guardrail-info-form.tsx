@@ -78,7 +78,7 @@ export function GuardrailInfoForm({ value, onChange }: GuardrailInfoFormProps) {
           ))}
           <Button
             type="button"
-            variant="outline"
+            variant="secondary"
             className="gap-2"
             onClick={() => {
               onChange({

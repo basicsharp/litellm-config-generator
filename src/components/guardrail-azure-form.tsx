@@ -127,7 +127,7 @@ export function GuardrailAzureForm({ entry, onChange }: GuardrailAzureFormProps)
           />
           <Button
             type="button"
-            variant="outline"
+            variant="secondary"
             size="icon"
             aria-label="Add blocklist"
             onClick={() => {

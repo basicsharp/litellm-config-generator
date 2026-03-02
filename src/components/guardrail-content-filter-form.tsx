@@ -63,7 +63,7 @@ export function GuardrailContentFilterForm({ entry, onChange }: GuardrailContent
           <Button
             type="button"
             size="sm"
-            variant="outline"
+            variant="secondary"
             onClick={() =>
               onChange({
                 categories: [
@@ -156,7 +156,7 @@ export function GuardrailContentFilterForm({ entry, onChange }: GuardrailContent
           <Button
             type="button"
             size="sm"
-            variant="outline"
+            variant="secondary"
             onClick={() =>
               onChange({
                 patterns: [
@@ -245,7 +245,7 @@ export function GuardrailContentFilterForm({ entry, onChange }: GuardrailContent
           <Button
             type="button"
             size="sm"
-            variant="outline"
+            variant="secondary"
             onClick={() =>
               onChange({ blocked_words: [...blockedWords, { keyword: '', action: 'block' }] })
             }

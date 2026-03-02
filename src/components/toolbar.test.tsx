@@ -4,6 +4,11 @@ import { describe, expect, it, vi } from 'vitest';
 import { Toolbar } from '@/components/toolbar';
 import type { VersionEntry } from '@/lib/catalog-context';
 
+// Mock ModeToggle so toolbar tests stay isolated
+vi.mock('@/components/mode-toggle', () => ({
+  ModeToggle: () => <button data-testid="mode-toggle">Toggle theme</button>,
+}));
+
 const versions: VersionEntry[] = [
   { ref: 'v1.0.0', folderName: 'v1.0.0', commit: 'aaaaaaa', generatedAt: '2026-01-01T00:00:00Z' },
 ];
@@ -36,5 +41,19 @@ describe('Toolbar', () => {
     );
 
     expect(screen.queryByText('Select version')).toBeNull();
+  });
+
+  it('renders ModeToggle in the toolbar', () => {
+    render(
+      <Toolbar
+        onImport={vi.fn()}
+        onDownload={vi.fn()}
+        versions={[]}
+        selectedVersion={null}
+        onVersionChange={vi.fn()}
+      />
+    );
+
+    expect(screen.getByTestId('mode-toggle')).not.toBeNull();
   });
 });

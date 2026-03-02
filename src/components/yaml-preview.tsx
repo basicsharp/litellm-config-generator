@@ -58,7 +58,7 @@ export function YamlPreview({ models, guardrails, catalogRef }: YamlPreviewProps
         <h2 className="text-sm font-semibold">YAML Preview</h2>
         <Button
           type="button"
-          variant="outline"
+          variant="secondary"
           size="sm"
           onClick={async () => {
             await navigator.clipboard.writeText(latestYamlText);

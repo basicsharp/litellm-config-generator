@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import type { VersionEntry } from '@/lib/catalog-context';
 import { VersionSelect } from '@/components/version-select';
+import { ModeToggle } from '@/components/mode-toggle';
 import { Card } from './ui/card';
 
 type ToolbarProps = {
@@ -46,7 +47,7 @@ export function Toolbar({
       <div className="flex items-center gap-2">
         <Button
           type="button"
-          variant="outline"
+          variant="secondary"
           onClick={onImport}
           className="gap-2 text-xs sm:text-sm"
         >
@@ -57,6 +58,7 @@ export function Toolbar({
           <Download className="h-4 w-4" />
           Download
         </Button>
+        <ModeToggle />
       </div>
     </Card>
   );
