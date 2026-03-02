@@ -52,7 +52,9 @@ export function CatalogProvider({ children }: { children: React.ReactNode }) {
 
     const loadIndex = async () => {
       try {
-        const response = await fetch('/catalogs/index.json');
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/catalogs/index.json`
+        );
         if (!response.ok) {
           if (isMounted) {
             setVersions([]);
@@ -96,9 +98,12 @@ export function CatalogProvider({ children }: { children: React.ReactNode }) {
 
       setIsLoading(true);
       try {
-        const response = await fetch(`/catalogs/${selectedVersion}/catalog.json`, {
-          signal: controller.signal,
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/catalogs/${selectedVersion}/catalog.json`,
+          {
+            signal: controller.signal,
+          }
+        );
         if (!response.ok) {
           setCatalog(null);
           return;

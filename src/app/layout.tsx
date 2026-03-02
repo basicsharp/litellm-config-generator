@@ -13,13 +13,7 @@ const geistSans = Geist({
 export const metadata: Metadata = {
   title: 'LiteLLM Config Generator',
   description: 'Generate and edit LiteLLM model_list YAML configurations.',
-  icons: {
-    icon: '/icon.png?v=gear',
-    shortcut: '/icon.png?v=gear',
-    apple: '/icon.png?v=gear',
-  },
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{

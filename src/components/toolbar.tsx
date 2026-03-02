@@ -3,6 +3,7 @@
 import React from 'react';
 import { Download, Upload } from 'lucide-react';
 import Image from 'next/image';
+import iconSrc from '@/app/icon.png';
 
 import { Button } from '@/components/ui/button';
 import type { VersionEntry } from '@/lib/catalog-context';
@@ -29,7 +30,7 @@ export function Toolbar({
     <Card className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-card p-4">
       <div className="flex items-center gap-2">
         <Image
-          src="/icon.png?v=gear"
+          src={iconSrc}
           alt="LiteLLM logo"
           className="h-6 w-6 rounded-sm"
           width={24}
